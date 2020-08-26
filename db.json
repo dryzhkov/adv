@@ -1,0 +1,17 @@
+{
+  "adventures": [
+    {
+      "id": 1,
+      "days": [
+        {
+          "date": "2020-08-01",
+          "from": "Seattle, WA",
+          "to": "Portland, OR",
+          "miles": 300,
+          "hours": 4.5,
+          "directions": null
+        }
+      ]
+    }
+  ]
+}
