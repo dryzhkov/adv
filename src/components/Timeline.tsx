@@ -15,7 +15,7 @@ export function Home() {
                     key={t.id}
                     className={index % 2 === 0 ? 'record left' : 'record right'}
                 >
-                    <div className="content">
+                    <div className="trip">
                         <h2>{t.title}</h2>
                         <h3>{JSON.stringify(t.days)}</h3>
                     </div>

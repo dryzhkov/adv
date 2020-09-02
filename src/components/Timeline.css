@@ -6,7 +6,8 @@
 
 #adv {
     min-height: 100vh;
-    background-color: #474e4a;
+    /* background-color: #474e4a; */
+    background-color: #61aab3;
     font-family: Helvetica, sans-serif;
 }
 
@@ -95,9 +96,11 @@
 }
 
 /* The actual content */
-#adv .content {
+#adv .trip {
     padding: 20px 30px;
     background-color: #fffeee;
     position: relative;
     border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 30px,
+        rgba(0, 0, 0, 0.23) 0px 6px 10px;
 }
