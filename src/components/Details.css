@@ -1,0 +1,30 @@
+.wrapper {
+    /* grid-row-start: 1;
+    grid-row-end: 5; */
+    align-items: start;
+    display: grid;
+    grid-template-columns: 170px 170px 170px 220px 220px;
+    justify-content: end;
+    grid-template-rows: 85px;
+}
+
+.wrapper .info {
+    width: 200px;
+    text-align: center;
+    padding: 0;
+    margin: 20px;
+}
+.wrapper button {
+    width: 150px;
+    height: 50px;
+    padding: 0;
+    margin: 20px;
+}
+
+.tripTitle {
+    margin-top: 60px;
+}
+
+.content {
+    margin: 15px;
+}

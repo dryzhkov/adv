@@ -1,15 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Details } from './Details';
 import { Timeline } from './Timeline';
 import './App.css';
+import { NavBar } from './NavBar';
 
 function App() {
     return (
         <Router>
-            <nav>
-                <Link to="/">Home</Link>
-            </nav>
+            <NavBar />
             <main>
                 <Switch>
                     <Route path="/login">

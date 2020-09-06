@@ -11,8 +11,12 @@ body {
     padding: 0;
     font-family: open sans, sans-serif;
     font-size: 14px;
-    color: #fffeee;
+    color: #f8f9fa;
     background-color: #61aab3;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.editable:hover {
+    cursor: pointer;
 }

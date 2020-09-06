@@ -4,13 +4,13 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import detailsReducer, { TripEdit } from '../reducers/detailsReducer';
 import { getTripDetails, Day } from '../services/tripService';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
+import './Details.css';
 
 const initialState: TripEdit = {
     trip: {
@@ -26,9 +26,10 @@ const initialState: TripEdit = {
 };
 
 export function Details() {
-    let { id } = useParams();
+    const { id } = useParams();
     const [state, dispatch] = useReducer(detailsReducer, initialState);
-    const { trip, dayIndex, showDatePicker, selectedDate } = state;
+    const { trip, dayIndex, showDatePicker, selectedDate, isEditing } = state;
+
     function getTotalHours() {
         return trip.days.reduce(
             (accumulator: number, currentValue: Day) =>
@@ -45,7 +46,7 @@ export function Details() {
         );
     }
 
-    function renderTripDays() {
+    function displayTripDays() {
         return (
             <Table striped bordered hover variant="dark">
                 <thead>
@@ -60,7 +61,7 @@ export function Details() {
                 </thead>
                 <tbody>
                     {trip.days.map((d, i) => {
-                        if (dayIndex === i) {
+                        if (isEditing && dayIndex === i) {
                             return (
                                 <tr key={i}>
                                     <td>{d.date}</td>
@@ -172,6 +173,7 @@ export function Details() {
                                             dayIndex: i,
                                         })
                                     }
+                                    className="editable"
                                 >
                                     <td>{d.date}</td>
                                     <td>{d.from}</td>
@@ -204,37 +206,47 @@ export function Details() {
         }
     }
 
-    function handleSaveTrip() {
-        dispatch({ type: 'stopEditing' });
+    function displayTitle() {
+        if (isEditing) {
+            return (
+                <InputGroup size="sm">
+                    <FormControl
+                        aria-label="Title"
+                        aria-describedby="inputGroup-sizing-sm"
+                        defaultValue={trip.title || ''}
+                        placeholder={
+                            !trip.title ? 'Give this trip a title' : ''
+                        }
+                        onChange={(e) =>
+                            dispatch({
+                                type: 'updateTitle',
+                                title: e.target.value,
+                            })
+                        }
+                        className="tripTitle"
+                    />
+                </InputGroup>
+            );
+        } else {
+            return (
+                <Button
+                    variant="outline-info"
+                    onClick={() =>
+                        dispatch({
+                            type: 'startEditing',
+                        })
+                    }
+                    className="editable tripTitle"
+                >
+                    {trip.title}
+                </Button>
+            );
+        }
     }
 
-    function handleDiscard() {
-        dispatch({ type: 'discard' });
-    }
-
-    useEffect(() => {
-        getTripDetails(id).then(
-            (t) => t && dispatch({ type: 'requestTripSuccess', trip: t })
-        );
-    }, [id]);
-
-    return (
-        <>
-            <h1>{trip.title}</h1>
-            <ListGroup horizontal>
-                <ListGroup.Item>
-                    {' '}
-                    <Card className="bg-dark text-white" body>
-                        Total Hours: {getTotalHours()}
-                    </Card>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                    <Card className="bg-dark text-white" body>
-                        Total distance: {getTotalDistance()}
-                    </Card>
-                </ListGroup.Item>
-            </ListGroup>
-            <div>
+    function displayControls() {
+        return (
+            <div className="wrapper">
                 <Button
                     variant="primary"
                     size="lg"
@@ -247,8 +259,8 @@ export function Details() {
                     variant="secondary"
                     size="lg"
                     active
-                    onClick={handleSaveTrip}
-                    disabled={dayIndex === -1}
+                    onClick={() => dispatch({ type: 'save' })}
+                    disabled={!isEditing}
                 >
                     Save
                 </Button>
@@ -256,11 +268,19 @@ export function Details() {
                     variant="secondary"
                     size="lg"
                     active
-                    onClick={handleDiscard}
-                    disabled={dayIndex === -1}
+                    onClick={() => dispatch({ type: 'discard' })}
+                    disabled={!isEditing}
                 >
                     Discard
                 </Button>
+                <Card className="bg-dark text-white info" border="info">
+                    <Card.Header>Total Hours</Card.Header>
+                    <Card.Body>{getTotalHours()}</Card.Body>
+                </Card>
+                <Card className="bg-dark text-white info" border="info">
+                    <Card.Header>Total Distance</Card.Header>
+                    <Card.Body>{getTotalDistance()}</Card.Body>
+                </Card>
                 <Modal
                     show={showDatePicker}
                     onHide={() => dispatch({ type: 'hideDatePicker' })}
@@ -289,15 +309,30 @@ export function Details() {
                         <Button
                             variant="primary"
                             onClick={() => {
-                                dispatch({ type: 'save' });
+                                dispatch({ type: 'addDay' });
                             }}
                         >
-                            Save Changes
+                            Add
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                {trip ? renderTripDays() : <div>Loading your trip...</div>}
             </div>
-        </>
+        );
+    }
+
+    useEffect(() => {
+        if (!isNaN(Number(id))) {
+            getTripDetails(id).then(
+                (t) => t && dispatch({ type: 'requestTripSuccess', trip: t })
+            );
+        }
+    }, [id]);
+
+    return (
+        <div className="content">
+            {displayControls()}
+            {displayTitle()}
+            {displayTripDays()}
+        </div>
     );
 }

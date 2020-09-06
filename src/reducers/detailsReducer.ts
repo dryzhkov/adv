@@ -14,6 +14,7 @@ export interface TripEdit {
 }
 
 export default function (state: TripEdit, action: EditAction): TripEdit {
+    const { selectedDate, trip } = state;
     switch (action.type) {
         case 'showDatePicker':
             return {
@@ -32,7 +33,21 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
             };
 
         case 'save':
-            const { selectedDate, trip } = state;
+            const savedTrip = {
+                ...trip,
+                days: [...trip.days],
+            };
+            return {
+                ...state,
+                trip: {
+                    ...trip,
+                    days: [...trip.days],
+                },
+                saved: savedTrip,
+                dayIndex: -1,
+                isEditing: false,
+            };
+        case 'addDay':
             const indexToEdit = trip.days.length;
             const newDay = {
                 date: selectedDate.toDateString(),
@@ -63,7 +78,7 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
                 ...state,
                 saved: state.saved || state.trip,
                 isEditing: true,
-                dayIndex: action.dayIndex,
+                dayIndex: action.dayIndex !== undefined ? action.dayIndex : -1,
             };
         case 'discard':
             return {
@@ -96,6 +111,14 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
                     days,
                 },
             };
+        case 'updateTitle':
+            return {
+                ...state,
+                trip: {
+                    ...state.trip,
+                    title: action.title,
+                },
+            };
     }
     throw new Error('unknow action: ' + JSON.stringify(action));
 }
@@ -106,8 +129,10 @@ export type EditAction =
     | { type: 'hideDatePicker' }
     | { type: 'selectDate'; date: Date }
     | { type: 'save' }
+    | { type: 'addDay' }
     | { type: 'stopEditing' }
-    | { type: 'startEditing'; dayIndex: number }
+    | { type: 'startEditing'; dayIndex?: number }
     | { type: 'discard' }
     | { type: 'requestTripSuccess'; trip: Trip }
-    | { type: 'updateDay'; day: PartialDay };
+    | { type: 'updateDay'; day: PartialDay }
+    | { type: 'updateTitle'; title: string };
