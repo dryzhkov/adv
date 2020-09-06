@@ -1,11 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Home } from './Timeline';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Details } from './Details';
+import { Timeline } from './Timeline';
 import './App.css';
 
 function App() {
     return (
         <Router>
+            <nav>
+                <Link to="/">Home</Link>
+            </nav>
             <main>
                 <Switch>
                     <Route path="/login">
@@ -15,7 +19,7 @@ function App() {
                         <Details />
                     </Route>
                     <Route path="/">
-                        <Home />
+                        <Timeline />
                     </Route>
                 </Switch>
             </main>
@@ -25,10 +29,6 @@ function App() {
 
 function Login() {
     return <h2>Login</h2>;
-}
-
-function Details() {
-    return <h2>Trip Details</h2>;
 }
 
 export default App;

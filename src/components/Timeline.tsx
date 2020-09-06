@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { getTrips } from '../services/tripService';
+import { Link } from 'react-router-dom';
+import { getTrips, Trip } from '../services/tripService';
 import './Timeline.css';
 
-export function Home() {
-    const [trips, setTrips] = useState<any[]>([]);
+export function Timeline() {
+    const [trips, setTrips] = useState<Trip[]>([]);
     useEffect(() => {
         getTrips().then((trips) => setTrips(trips));
     }, []);
 
     function renderTrips() {
-        return trips.map((t: any, index: number) => {
+        return trips.map((t: Trip, index: number) => {
             return (
-                <div
-                    key={t.id}
-                    className={index % 2 === 0 ? 'record left' : 'record right'}
-                >
-                    <div className="trip">
-                        <h2>{t.title}</h2>
-                        <h3>{JSON.stringify(t.days)}</h3>
+                <Link to={`/details/${t.id}`} key={t.id}>
+                    <div
+                        className={
+                            index % 2 === 0 ? 'record left' : 'record right'
+                        }
+                    >
+                        <div className="trip">
+                            <h2>{t.title}</h2>
+                        </div>
                     </div>
-                </div>
+                </Link>
             );
         });
     }

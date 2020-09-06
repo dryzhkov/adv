@@ -8,7 +8,7 @@
                     "date": "2020-08-01",
                     "from": "Seattle, WA",
                     "to": "Portland, OR",
-                    "miles": 300,
+                    "distance": 300,
                     "hours": 4.5,
                     "directions": null
                 }
@@ -22,7 +22,7 @@
                     "date": "2019-07-15",
                     "from": "Kirkland, WA",
                     "to": "Spray, OR",
-                    "miles": 819,
+                    "distance": 819,
                     "hours": 17,
                     "directions": "https://goo.gl/maps/fftwY4Pykgdv1jEE8"
                 }
@@ -36,7 +36,7 @@
                     "date": "2020-09-01",
                     "from": "Kirkland, WA",
                     "to": "Grants Pass, OR",
-                    "miles": 433,
+                    "distance": 433,
                     "hours": 7,
                     "directions": "https://goo.gl/maps/fXiWVRs6gUVtcJiY6"
                 },
@@ -44,7 +44,7 @@
                     "date": "2020-09-02",
                     "from": "Grants Pass, OR",
                     "to": "Eureka, CA",
-                    "miles": 294,
+                    "distance": 294,
                     "hours": 7,
                     "directions": "https://goo.gl/maps/YeBWcrYAGbEVjkPD7"
                 },
@@ -52,7 +52,7 @@
                     "date": "2020-09-03",
                     "from": "Eureka, CA",
                     "to": "Grants Pass, OR",
-                    "miles": 200,
+                    "distance": 200,
                     "hours": 4,
                     "directions": "https://goo.gl/maps/ZoKPTx3QM2YnFoUi8"
                 }
