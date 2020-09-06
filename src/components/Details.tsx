@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import DatePicker from 'react-datepicker';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import { getTripDetails, Trip, Day } from '../services/tripService';
-
+import DayPicker from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 const defaultTrip: Trip = {
     id: -1,
     title: '',
@@ -285,25 +285,19 @@ export function Details() {
                     centered
                     animation={false}
                 >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <DatePicker
-                            selectsRange={false}
-                            selected={selectedDate}
-                            onChange={(date) => {
+                    <Modal.Body className="table-dark">
+                        <DayPicker
+                            showOutsideDays
+                            todayButton="Go to Today"
+                            selectedDays={[selectedDate]}
+                            onDayClick={(date) => {
                                 if (date) {
-                                    if (Array.isArray(date)) {
-                                        setSelectedDate(date[0]);
-                                    } else {
-                                        setSelectedDate(date);
-                                    }
+                                    setSelectedDate(date);
                                 }
                             }}
-                        />
+                        ></DayPicker>
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer className="table-dark">
                         <Button
                             variant="secondary"
                             onClick={() => setShowDatePicker(false)}
