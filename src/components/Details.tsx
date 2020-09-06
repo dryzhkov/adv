@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -7,34 +7,28 @@ import FormControl from 'react-bootstrap/FormControl';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import { getTripDetails, Trip, Day } from '../services/tripService';
+import detailsReducer, { TripEdit } from '../reducers/detailsReducer';
+import { getTripDetails, Day } from '../services/tripService';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
-const defaultTrip: Trip = {
-    id: -1,
-    title: '',
-    days: [],
-};
 
-type PartialDay = {
-    [P in keyof Day]?: Day[P];
+const initialState: TripEdit = {
+    trip: {
+        id: -1,
+        title: '',
+        days: [],
+    },
+    saved: undefined,
+    isEditing: false,
+    showDatePicker: false,
+    selectedDate: new Date(),
+    dayIndex: -1,
 };
-
-interface EditTrip {
-    prevTrip: Trip | undefined;
-    dayIndex: number;
-}
 
 export function Details() {
     let { id } = useParams();
-    const [trip, setTrip] = useState<Trip>(defaultTrip);
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-    const [edit, setEdit] = useState<EditTrip>({
-        dayIndex: -1,
-        prevTrip: undefined,
-    });
-
+    const [state, dispatch] = useReducer(detailsReducer, initialState);
+    const { trip, dayIndex, showDatePicker, selectedDate } = state;
     function getTotalHours() {
         return trip.days.reduce(
             (accumulator: number, currentValue: Day) =>
@@ -65,8 +59,8 @@ export function Details() {
                     </tr>
                 </thead>
                 <tbody>
-                    {trip!.days.map((d, i) => {
-                        if (edit.dayIndex === i) {
+                    {trip.days.map((d, i) => {
+                        if (dayIndex === i) {
                             return (
                                 <tr key={i}>
                                     <td>{d.date}</td>
@@ -76,12 +70,16 @@ export function Details() {
                                                 aria-label="From"
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 defaultValue={d.from}
-                                                onChange={(e) => {
-                                                    handleDayChange({
-                                                        date: d.date,
-                                                        from: e.target.value,
-                                                    });
-                                                }}
+                                                onChange={(e) =>
+                                                    dispatch({
+                                                        type: 'updateDay',
+                                                        day: {
+                                                            date: d.date,
+                                                            from:
+                                                                e.target.value,
+                                                        },
+                                                    })
+                                                }
                                             />
                                         </InputGroup>
                                     </td>
@@ -91,12 +89,15 @@ export function Details() {
                                                 aria-label="To"
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 defaultValue={d.to}
-                                                onChange={(e) => {
-                                                    handleDayChange({
-                                                        date: d.date,
-                                                        to: e.target.value,
-                                                    });
-                                                }}
+                                                onChange={(e) =>
+                                                    dispatch({
+                                                        type: 'updateDay',
+                                                        day: {
+                                                            date: d.date,
+                                                            to: e.target.value,
+                                                        },
+                                                    })
+                                                }
                                             />
                                         </InputGroup>
                                     </td>
@@ -106,14 +107,17 @@ export function Details() {
                                                 aria-label="Distance"
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 defaultValue={d.distance}
-                                                onChange={(e) => {
-                                                    handleDayChange({
-                                                        date: d.date,
-                                                        distance: Number(
-                                                            e.target.value
-                                                        ),
-                                                    });
-                                                }}
+                                                onChange={(e) =>
+                                                    dispatch({
+                                                        type: 'updateDay',
+                                                        day: {
+                                                            date: d.date,
+                                                            distance: Number(
+                                                                e.target.value
+                                                            ),
+                                                        },
+                                                    })
+                                                }
                                             />
                                         </InputGroup>
                                     </td>
@@ -123,14 +127,17 @@ export function Details() {
                                                 aria-label="Hours"
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 defaultValue={d.hours}
-                                                onChange={(e) => {
-                                                    handleDayChange({
-                                                        date: d.date,
-                                                        hours: Number(
-                                                            e.target.value
-                                                        ),
-                                                    });
-                                                }}
+                                                onChange={(e) =>
+                                                    dispatch({
+                                                        type: 'updateDay',
+                                                        day: {
+                                                            date: d.date,
+                                                            hours: Number(
+                                                                e.target.value
+                                                            ),
+                                                        },
+                                                    })
+                                                }
                                             />
                                         </InputGroup>
                                     </td>
@@ -140,13 +147,16 @@ export function Details() {
                                                 aria-label="Directions"
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 defaultValue={d.directions}
-                                                onChange={(e) => {
-                                                    handleDayChange({
-                                                        date: d.date,
-                                                        directions:
-                                                            e.target.value,
-                                                    });
-                                                }}
+                                                onChange={(e) =>
+                                                    dispatch({
+                                                        type: 'updateDay',
+                                                        day: {
+                                                            date: d.date,
+                                                            directions:
+                                                                e.target.value,
+                                                        },
+                                                    })
+                                                }
                                             />
                                         </InputGroup>
                                     </td>
@@ -157,17 +167,9 @@ export function Details() {
                                 <tr
                                     key={i}
                                     onClick={() =>
-                                        setEdit((prevState) => {
-                                            if (!prevState.prevTrip) {
-                                                return {
-                                                    prevTrip: { ...trip },
-                                                    dayIndex: i,
-                                                };
-                                            }
-                                            return {
-                                                prevTrip: prevState.prevTrip,
-                                                dayIndex: i,
-                                            };
+                                        dispatch({
+                                            type: 'startEditing',
+                                            dayIndex: i,
                                         })
                                     }
                                 >
@@ -186,21 +188,6 @@ export function Details() {
         );
     }
 
-    function handleDayChange(day: PartialDay) {
-        const days = [...trip.days];
-
-        let indexToUpdate = days.findIndex((d) => d.date === day.date);
-
-        if (indexToUpdate > -1) {
-            days[indexToUpdate] = { ...days[indexToUpdate], ...day };
-        }
-
-        setTrip({
-            ...trip,
-            days,
-        });
-    }
-
     function displayMaps(url: string) {
         if (url) {
             return (
@@ -217,28 +204,23 @@ export function Details() {
         }
     }
 
-    function addDayClick() {
-        setShowDatePicker(true);
-    }
-
     function handleSaveTrip() {
-        setEdit({ ...edit, dayIndex: -1 });
+        dispatch({ type: 'stopEditing' });
     }
 
     function handleDiscard() {
-        if (edit.prevTrip) {
-            setTrip({ ...edit.prevTrip });
-        }
-
-        setEdit({ prevTrip: undefined, dayIndex: -1 });
+        dispatch({ type: 'discard' });
     }
 
     useEffect(() => {
-        getTripDetails(id).then((t) => t && setTrip(t));
+        getTripDetails(id).then(
+            (t) => t && dispatch({ type: 'requestTripSuccess', trip: t })
+        );
     }, [id]);
 
     return (
         <>
+            <h1>{trip.title}</h1>
             <ListGroup horizontal>
                 <ListGroup.Item>
                     {' '}
@@ -257,7 +239,7 @@ export function Details() {
                     variant="primary"
                     size="lg"
                     active
-                    onClick={addDayClick}
+                    onClick={() => dispatch({ type: 'showDatePicker' })}
                 >
                     Add day
                 </Button>
@@ -266,7 +248,7 @@ export function Details() {
                     size="lg"
                     active
                     onClick={handleSaveTrip}
-                    disabled={edit.dayIndex === -1}
+                    disabled={dayIndex === -1}
                 >
                     Save
                 </Button>
@@ -275,13 +257,13 @@ export function Details() {
                     size="lg"
                     active
                     onClick={handleDiscard}
-                    disabled={edit.dayIndex === -1}
+                    disabled={dayIndex === -1}
                 >
                     Discard
                 </Button>
                 <Modal
                     show={showDatePicker}
-                    onHide={() => setShowDatePicker(false)}
+                    onHide={() => dispatch({ type: 'hideDatePicker' })}
                     centered
                     animation={false}
                 >
@@ -292,7 +274,7 @@ export function Details() {
                             selectedDays={[selectedDate]}
                             onDayClick={(date) => {
                                 if (date) {
-                                    setSelectedDate(date);
+                                    dispatch({ type: 'selectDate', date });
                                 }
                             }}
                         ></DayPicker>
@@ -300,31 +282,14 @@ export function Details() {
                     <Modal.Footer className="table-dark">
                         <Button
                             variant="secondary"
-                            onClick={() => setShowDatePicker(false)}
+                            onClick={() => dispatch({ type: 'hideDatePicker' })}
                         >
                             Close
                         </Button>
                         <Button
                             variant="primary"
                             onClick={() => {
-                                const indexToEdit = trip.days.length;
-                                const emtpyDay = {
-                                    date: selectedDate?.toDateString(),
-                                    from: '',
-                                    to: '',
-                                    distance: 0,
-                                    hours: 0,
-                                    directions: '',
-                                };
-                                setTrip({
-                                    ...trip,
-                                    days: trip.days.concat(emtpyDay),
-                                });
-                                setShowDatePicker(false);
-                                setEdit({
-                                    ...edit,
-                                    dayIndex: indexToEdit,
-                                });
+                                dispatch({ type: 'save' });
                             }}
                         >
                             Save Changes
