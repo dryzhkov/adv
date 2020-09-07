@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -7,7 +7,12 @@ import FormControl from 'react-bootstrap/FormControl';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import detailsReducer, { TripEdit } from '../reducers/detailsReducer';
-import { getTripDetails, Day } from '../services/tripService';
+import {
+    createTrip,
+    updateTrip,
+    getTripDetails,
+    Day,
+} from '../services/tripService';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import './Details.css';
@@ -27,6 +32,7 @@ const initialState: TripEdit = {
 
 export function Details() {
     const { id } = useParams();
+    const history = useHistory();
     const [state, dispatch] = useReducer(detailsReducer, initialState);
     const { trip, dayIndex, showDatePicker, selectedDate, isEditing } = state;
 
@@ -64,7 +70,7 @@ export function Details() {
                         if (isEditing && dayIndex === i) {
                             return (
                                 <tr key={i}>
-                                    <td>{d.date}</td>
+                                    <td>{d.date.toDateString()}</td>
                                     <td>
                                         <InputGroup size="sm">
                                             <FormControl
@@ -175,7 +181,7 @@ export function Details() {
                                     }
                                     className="editable"
                                 >
-                                    <td>{d.date}</td>
+                                    <td>{d.date.toDateString()}</td>
                                     <td>{d.from}</td>
                                     <td>{d.to}</td>
                                     <td>{d.distance}</td>
@@ -209,7 +215,7 @@ export function Details() {
     function displayTitle() {
         if (isEditing) {
             return (
-                <InputGroup size="sm">
+                <InputGroup size="lg">
                     <FormControl
                         aria-label="Title"
                         aria-describedby="inputGroup-sizing-sm"
@@ -230,12 +236,14 @@ export function Details() {
         } else {
             return (
                 <Button
-                    variant="outline-info"
+                    variant="info"
                     onClick={() =>
                         dispatch({
                             type: 'startEditing',
                         })
                     }
+                    size="lg"
+                    block
                     className="editable tripTitle"
                 >
                     {trip.title}
@@ -250,7 +258,6 @@ export function Details() {
                 <Button
                     variant="primary"
                     size="lg"
-                    active
                     onClick={() => dispatch({ type: 'showDatePicker' })}
                 >
                     Add day
@@ -258,8 +265,7 @@ export function Details() {
                 <Button
                     variant="secondary"
                     size="lg"
-                    active
-                    onClick={() => dispatch({ type: 'save' })}
+                    onClick={handleSave}
                     disabled={!isEditing}
                 >
                     Save
@@ -267,7 +273,6 @@ export function Details() {
                 <Button
                     variant="secondary"
                     size="lg"
-                    active
                     onClick={() => dispatch({ type: 'discard' })}
                     disabled={!isEditing}
                 >
@@ -318,6 +323,30 @@ export function Details() {
                 </Modal>
             </div>
         );
+    }
+
+    function handleSave() {
+        dispatch({ type: 'save' });
+        if (trip.id === -1) {
+            // creating a new trip
+            createTrip(trip).then((tripId) => {
+                if (tripId) {
+                    history.push(`/details/${tripId}`);
+                } else {
+                    console.log('something went wrong');
+                }
+            });
+        } else {
+            // updating existing trip
+            console.log('Updating trip: ', trip);
+            updateTrip(trip).then((success) => {
+                if (success) {
+                    console.log('updated');
+                } else {
+                    console.log('something went wrong, couldnt update trip');
+                }
+            });
+        }
     }
 
     useEffect(() => {

@@ -1,6 +1,4 @@
 .wrapper {
-    /* grid-row-start: 1;
-    grid-row-end: 5; */
     align-items: start;
     display: grid;
     grid-template-columns: 170px 170px 170px 220px 220px;

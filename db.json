@@ -1,62 +1,120 @@
 {
-    "trips": [
+  "trips": [
+    {
+      "id": 1,
+      "title": "Adventure at Mt. Hood",
+      "days": [
         {
-            "id": 1,
-            "title": "Adventure at Mt. Hood",
-            "days": [
-                {
-                    "date": "2020-08-01",
-                    "from": "Seattle, WA",
-                    "to": "Portland, OR",
-                    "distance": 300,
-                    "hours": 4.5,
-                    "directions": null
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "title": "Shaniko - Fossile (Oregon)",
-            "days": [
-                {
-                    "date": "2019-07-15",
-                    "from": "Kirkland, WA",
-                    "to": "Spray, OR",
-                    "distance": 819,
-                    "hours": 17,
-                    "directions": "https://goo.gl/maps/fftwY4Pykgdv1jEE8"
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "title": "California's Lost Coast",
-            "days": [
-                {
-                    "date": "2020-09-01",
-                    "from": "Kirkland, WA",
-                    "to": "Grants Pass, OR",
-                    "distance": 433,
-                    "hours": 7,
-                    "directions": "https://goo.gl/maps/fXiWVRs6gUVtcJiY6"
-                },
-                {
-                    "date": "2020-09-02",
-                    "from": "Grants Pass, OR",
-                    "to": "Eureka, CA",
-                    "distance": 294,
-                    "hours": 7,
-                    "directions": "https://goo.gl/maps/YeBWcrYAGbEVjkPD7"
-                },
-                {
-                    "date": "2020-09-03",
-                    "from": "Eureka, CA",
-                    "to": "Grants Pass, OR",
-                    "distance": 200,
-                    "hours": 4,
-                    "directions": "https://goo.gl/maps/ZoKPTx3QM2YnFoUi8"
-                }
-            ]
+          "date": "2020-08-01",
+          "from": "Seattle, WA",
+          "to": "Portland, OR",
+          "distance": 300,
+          "hours": 4.5,
+          "directions": null
         }
-    ]
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Shaniko - Fossile (Oregon)",
+      "days": [
+        {
+          "date": "2019-07-15",
+          "from": "Kirkland, WA",
+          "to": "Spray, OR",
+          "distance": 819,
+          "hours": 17,
+          "directions": "https://goo.gl/maps/fftwY4Pykgdv1jEE8"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "California's Lost Coast",
+      "days": [
+        {
+          "date": "2020-09-01",
+          "from": "Kirkland, WA",
+          "to": "Grants Pass, OR",
+          "distance": 433,
+          "hours": 7,
+          "directions": "https://goo.gl/maps/fXiWVRs6gUVtcJiY6"
+        },
+        {
+          "date": "2020-09-02",
+          "from": "Grants Pass, OR",
+          "to": "Eureka, CA",
+          "distance": 294,
+          "hours": 7,
+          "directions": "https://goo.gl/maps/YeBWcrYAGbEVjkPD7"
+        },
+        {
+          "date": "2020-09-03",
+          "from": "Eureka, CA",
+          "to": "Grants Pass, OR",
+          "distance": 200,
+          "hours": 4,
+          "directions": "https://goo.gl/maps/ZoKPTx3QM2YnFoUi8"
+        }
+      ]
+    },
+    {
+      "title": "Test Trip",
+      "days": [
+        {
+          "date": "2020-09-01T07:00:00.000Z",
+          "from": "Seattle Wa",
+          "to": "Eureka, Ca",
+          "distance": 450,
+          "hours": 9,
+          "directions": ""
+        },
+        {
+          "date": "2020-09-10T19:00:00.000Z",
+          "from": "fdsafds",
+          "to": "fdsafdsa",
+          "distance": 12,
+          "hours": 1,
+          "directions": ""
+        }
+      ],
+      "id": 4
+    },
+    {
+      "title": "Another Test Trip",
+      "days": [
+        {
+          "date": "Tue Sep 08 2020",
+          "from": "Somehwer ",
+          "to": "To Somewhere Else",
+          "distance": 1000,
+          "hours": 24,
+          "directions": ""
+        },
+        {
+          "date": "Wed Sep 09 2020",
+          "from": "Nowhere?",
+          "to": "Anywhere",
+          "distance": 230,
+          "hours": 4,
+          "directions": ""
+        }
+      ],
+      "id": 5
+    },
+    {
+      "title": "Teeest",
+      "days": [
+        {
+          "date": "2020-09-07T03:53:28.561Z",
+          "from": "fdsafdsa",
+          "to": "fdafdsa",
+          "distance": 123,
+          "hours": 12,
+          "directions": ""
+        }
+      ],
+      "id": 6
+    }
+  ]
 }

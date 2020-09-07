@@ -14,7 +14,7 @@ export interface TripEdit {
 }
 
 export default function (state: TripEdit, action: EditAction): TripEdit {
-    const { selectedDate, trip } = state;
+    const { selectedDate, trip, saved } = state;
     switch (action.type) {
         case 'showDatePicker':
             return {
@@ -50,7 +50,7 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
         case 'addDay':
             const indexToEdit = trip.days.length;
             const newDay = {
-                date: selectedDate.toDateString(),
+                date: selectedDate,
                 from: '',
                 to: '',
                 distance: 0,
@@ -63,6 +63,7 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
                     ...trip,
                     days: trip.days.concat(newDay),
                 },
+                saved: saved || state.trip,
                 dayIndex: indexToEdit,
                 isEditing: true,
                 showDatePicker: false,
@@ -76,14 +77,14 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
         case 'startEditing':
             return {
                 ...state,
-                saved: state.saved || state.trip,
+                saved: saved || state.trip,
                 isEditing: true,
                 dayIndex: action.dayIndex !== undefined ? action.dayIndex : -1,
             };
         case 'discard':
             return {
                 ...state,
-                trip: { ...state.saved! },
+                trip: { ...saved! },
                 saved: undefined,
                 isEditing: false,
                 dayIndex: -1,
