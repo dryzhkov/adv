@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -348,6 +348,15 @@ export function Details() {
             });
         }
     }
+    const memoizedHandleEsc = useCallback(
+        function handleEsc(event: KeyboardEvent) {
+            // ESC key code
+            if (event.keyCode === 27 && isEditing) {
+                dispatch({ type: 'stopEditing' });
+            }
+        },
+        [isEditing]
+    );
 
     useEffect(() => {
         if (!isNaN(Number(id))) {
@@ -356,6 +365,13 @@ export function Details() {
             );
         }
     }, [id]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', memoizedHandleEsc);
+        return () => {
+            document.removeEventListener('keydown', memoizedHandleEsc);
+        };
+    }, [memoizedHandleEsc]);
 
     return (
         <div className="content">
