@@ -79,42 +79,6 @@
         }
       ],
       "id": 4
-    },
-    {
-      "title": "Another Test Trip",
-      "days": [
-        {
-          "date": "Tue Sep 08 2020",
-          "from": "Somehwer ",
-          "to": "To Somewhere Else",
-          "distance": 1000,
-          "hours": 24,
-          "directions": ""
-        },
-        {
-          "date": "Wed Sep 09 2020",
-          "from": "Nowhere?",
-          "to": "Anywhere",
-          "distance": 230,
-          "hours": 4,
-          "directions": ""
-        }
-      ],
-      "id": 5
-    },
-    {
-      "title": "Teeest",
-      "days": [
-        {
-          "date": "2020-09-07T03:53:28.561Z",
-          "from": "fdsafdsa",
-          "to": "fdafdsa",
-          "distance": 123,
-          "hours": 12,
-          "directions": ""
-        }
-      ],
-      "id": 6
     }
   ]
 }

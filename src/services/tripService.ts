@@ -75,3 +75,14 @@ export function updateTrip(trip: Trip): Promise<boolean> {
         return response.ok;
     });
 }
+
+export function deleteTrip(tripId: number): Promise<boolean> {
+    return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips/${tripId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then((response) => {
+        return response.ok;
+    });
+}

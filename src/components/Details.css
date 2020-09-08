@@ -1,7 +1,7 @@
 .wrapper {
     align-items: start;
     display: grid;
-    grid-template-columns: 170px 170px 170px 220px 220px;
+    grid-template-columns: 170px 170px 170px 170px 220px 220px;
     justify-content: end;
     grid-template-rows: 85px;
 }

@@ -1,14 +1,23 @@
-import React, { useEffect, useReducer, useCallback } from 'react';
+import React, {
+    useEffect,
+    useReducer,
+    useCallback,
+    useRef,
+    useState,
+} from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Modal from 'react-bootstrap/Modal';
+import Overlay from 'react-bootstrap/Overlay';
 import Table from 'react-bootstrap/Table';
+import Tooltip from 'react-bootstrap/Tooltip';
 import detailsReducer, { TripEdit } from '../reducers/detailsReducer';
 import {
     createTrip,
+    deleteTrip,
     updateTrip,
     getTripDetails,
     Day,
@@ -34,6 +43,8 @@ export function Details() {
     const { id } = useParams();
     const history = useHistory();
     const [state, dispatch] = useReducer(detailsReducer, initialState);
+    const deleteRef = useRef(null);
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const { trip, dayIndex, showDatePicker, selectedDate, isEditing } = state;
 
     function getTotalHours() {
@@ -278,6 +289,29 @@ export function Details() {
                 >
                     Discard
                 </Button>
+                <Button
+                    variant="danger"
+                    size="lg"
+                    onClick={() => handleDelete()}
+                    ref={deleteRef}
+                >
+                    Delete
+                </Button>
+                <Overlay
+                    target={deleteRef.current}
+                    show={confirmDelete}
+                    placement="top"
+                    rootClose={true}
+                    onHide={() => {
+                        setConfirmDelete(false);
+                    }}
+                >
+                    {(props) => (
+                        <Tooltip id="delete-overlay" {...props}>
+                            Click delete button again to confirm!
+                        </Tooltip>
+                    )}
+                </Overlay>
                 <Card className="bg-dark text-white info" border="info">
                     <Card.Header>Total Hours</Card.Header>
                     <Card.Body>{getTotalHours()}</Card.Body>
@@ -348,6 +382,18 @@ export function Details() {
             });
         }
     }
+
+    function handleDelete() {
+        if (confirmDelete) {
+            deleteTrip(state.trip.id).then((isSuccess) => {
+                if (isSuccess) {
+                    history.push('/');
+                }
+            });
+        }
+        setConfirmDelete(!confirmDelete);
+    }
+
     const memoizedHandleEsc = useCallback(
         function handleEsc(event: KeyboardEvent) {
             // ESC key code
