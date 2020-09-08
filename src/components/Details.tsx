@@ -6,6 +6,7 @@ import React, {
     useState,
 } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -312,14 +313,6 @@ export function Details() {
                         </Tooltip>
                     )}
                 </Overlay>
-                <Card className="bg-dark text-white info" border="info">
-                    <Card.Header>Total Hours</Card.Header>
-                    <Card.Body>{getTotalHours()}</Card.Body>
-                </Card>
-                <Card className="bg-dark text-white info" border="info">
-                    <Card.Header>Total Distance</Card.Header>
-                    <Card.Body>{getTotalDistance()}</Card.Body>
-                </Card>
                 <Modal
                     show={showDatePicker}
                     onHide={() => dispatch({ type: 'hideDatePicker' })}
@@ -356,6 +349,19 @@ export function Details() {
                     </Modal.Footer>
                 </Modal>
             </div>
+        );
+    }
+
+    function displayTotals() {
+        return (
+            <>
+                <Badge variant="primary" as="div" className="info-badge">
+                    Time: {getTotalHours()} h
+                </Badge>
+                <Badge variant="success" as="div" className="info-badge">
+                    Distance: {getTotalDistance()} mi
+                </Badge>
+            </>
         );
     }
 
@@ -422,6 +428,7 @@ export function Details() {
     return (
         <div className="content">
             {displayControls()}
+            {displayTotals()}
             {displayTitle()}
             {displayTripDays()}
         </div>

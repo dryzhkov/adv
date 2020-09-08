@@ -1,16 +1,14 @@
 .wrapper {
     align-items: start;
     display: grid;
-    grid-template-columns: 170px 170px 170px 170px 220px 220px;
+    grid-template-columns: 170px 170px 170px 170px;
     justify-content: end;
-    grid-template-rows: 85px;
+    grid-template-rows: 70px;
 }
 
-.wrapper .info {
-    width: 200px;
-    text-align: center;
-    padding: 0;
-    margin: 20px;
+.info-badge {
+    margin: 0 10px 10px 0;
+    font-size: 1.25rem;
 }
 .wrapper button {
     width: 150px;
@@ -20,9 +18,12 @@
 }
 
 .tripTitle {
-    margin-top: 60px;
+    margin-top: 0;
 }
 
 .content {
     margin: 15px;
+}
+.tripTitle {
+    text-align: center;
 }
