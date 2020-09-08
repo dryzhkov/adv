@@ -27,3 +27,6 @@
 .tripTitle {
     text-align: center;
 }
+.removeDayBtn {
+    float: right;
+}

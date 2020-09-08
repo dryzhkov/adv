@@ -72,6 +72,42 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
                 isEditing: true,
                 showDatePicker: false,
             };
+        case 'removeDay':
+            if (action.index > -1) {
+                let days = [...trip.days];
+                const nextIndex =
+                    days.length - 1 === action.index
+                        ? action.index - 1
+                        : action.index;
+                days.splice(action.index, 1);
+
+                return {
+                    ...state,
+                    trip: {
+                        ...trip,
+                        days,
+                    },
+                    dayIndex: nextIndex,
+                };
+            }
+            throw new Error('invalid index: ' + action.index);
+        case 'updateDay':
+            const days = [...state.trip.days];
+            let indexToUpdate = days.findIndex(
+                (d) => d.date === action.day.date
+            );
+
+            if (indexToUpdate > -1) {
+                days[indexToUpdate] = { ...days[indexToUpdate], ...action.day };
+            }
+
+            return {
+                ...state,
+                trip: {
+                    ...state.trip,
+                    days,
+                },
+            };
         case 'stopEditing':
             return {
                 ...state,
@@ -98,24 +134,6 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
                 ...state,
                 trip: action.trip,
             };
-        case 'updateDay':
-            const days = [...state.trip.days];
-
-            let indexToUpdate = days.findIndex(
-                (d) => d.date === action.day.date
-            );
-
-            if (indexToUpdate > -1) {
-                days[indexToUpdate] = { ...days[indexToUpdate], ...action.day };
-            }
-
-            return {
-                ...state,
-                trip: {
-                    ...state.trip,
-                    days,
-                },
-            };
         case 'updateTitle':
             return {
                 ...state,
@@ -135,6 +153,7 @@ export type EditAction =
     | { type: 'selectDate'; date: Date }
     | { type: 'save' }
     | { type: 'addDay' }
+    | { type: 'removeDay'; index: number }
     | { type: 'stopEditing' }
     | { type: 'startEditing'; dayIndex?: number }
     | { type: 'discard' }

@@ -6,9 +6,9 @@ import React, {
     useState,
 } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Modal from 'react-bootstrap/Modal';
@@ -46,6 +46,11 @@ export function Details() {
     const [state, dispatch] = useReducer(detailsReducer, initialState);
     const deleteRef = useRef(null);
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [alert, setAlert] = useState({
+        show: false,
+        message: '',
+        variant: 'info',
+    });
     const { trip, dayIndex, showDatePicker, selectedDate, isEditing } = state;
 
     function getTotalHours() {
@@ -82,7 +87,22 @@ export function Details() {
                         if (isEditing && dayIndex === i) {
                             return (
                                 <tr key={i}>
-                                    <td>{d.date.toDateString()}</td>
+                                    <td>
+                                        {d.date.toDateString()}{' '}
+                                        <Button
+                                            variant="outline-danger"
+                                            onClick={() => {
+                                                dispatch({
+                                                    type: 'removeDay',
+                                                    index: i,
+                                                });
+                                            }}
+                                            size="sm"
+                                            className="removeDayBtn"
+                                        >
+                                            Remove
+                                        </Button>
+                                    </td>
                                     <td>
                                         <InputGroup size="sm">
                                             <FormControl
@@ -213,6 +233,7 @@ export function Details() {
             return (
                 <Button
                     variant="info"
+                    size="sm"
                     onClick={(event) => {
                         event.stopPropagation();
                         window.open(url, '_blank');
@@ -296,7 +317,7 @@ export function Details() {
                     onClick={() => handleDelete()}
                     ref={deleteRef}
                 >
-                    Delete
+                    Delete Trip
                 </Button>
                 <Overlay
                     target={deleteRef.current}
@@ -365,7 +386,24 @@ export function Details() {
         );
     }
 
+    // eslint-disable-next-line
     function handleSave() {
+        if (!trip.title) {
+            setAlert({
+                show: true,
+                variant: 'danger',
+                message: 'Give the trip a meaningful title',
+            });
+            return;
+        }
+        if (!trip.days || trip.days.length === 0) {
+            setAlert({
+                show: true,
+                variant: 'danger',
+                message: 'Add at least 1 day before saving',
+            });
+            return;
+        }
         dispatch({ type: 'save' });
         if (trip.id === -1) {
             // creating a new trip
@@ -400,14 +438,19 @@ export function Details() {
         setConfirmDelete(!confirmDelete);
     }
 
-    const memoizedHandleEsc = useCallback(
-        function handleEsc(event: KeyboardEvent) {
-            // ESC key code
-            if (event.keyCode === 27 && isEditing) {
+    const memoizedKeydown = useCallback(
+        function (event: KeyboardEvent) {
+            if (!isEditing) return;
+
+            if (event.keyCode === 27) {
+                // ESC key code
                 dispatch({ type: 'stopEditing' });
+            } else if (event.keyCode === 13) {
+                // ENTER
+                handleSave();
             }
         },
-        [isEditing]
+        [isEditing, handleSave]
     );
 
     useEffect(() => {
@@ -419,14 +462,22 @@ export function Details() {
     }, [id]);
 
     useEffect(() => {
-        document.addEventListener('keydown', memoizedHandleEsc);
+        document.addEventListener('keydown', memoizedKeydown);
         return () => {
-            document.removeEventListener('keydown', memoizedHandleEsc);
+            document.removeEventListener('keydown', memoizedKeydown);
         };
-    }, [memoizedHandleEsc]);
+    }, [memoizedKeydown]);
 
     return (
         <div className="content">
+            <Alert
+                variant={alert.variant}
+                onClose={() => setAlert({ ...alert, show: false })}
+                show={alert.show}
+                dismissible
+            >
+                <p>{alert.message}</p>
+            </Alert>
             {displayControls()}
             {displayTotals()}
             {displayTitle()}

@@ -62,48 +62,16 @@
       "title": "Test Trip",
       "days": [
         {
-          "date": "2020-09-01T07:00:00.000Z",
-          "from": "Seattle Wa",
-          "to": "Eureka, Ca",
-          "distance": 450,
-          "hours": 9,
-          "directions": ""
+          "date": "2020-09-03T00:00:00.000Z",
+          "from": "Eureka, CA",
+          "to": "Grants Pass, OR",
+          "distance": 200,
+          "hours": 4,
+          "directions": "https://goo.gl/maps/ZoKPTx3QM2YnFoUi8"
         },
         {
-          "date": "2020-09-05T19:00:00.000Z",
+          "date": "2020-09-08T20:39:24.357Z",
           "from": "",
-          "to": "",
-          "distance": 0,
-          "hours": 0,
-          "directions": ""
-        },
-        {
-          "date": "2020-09-08T04:34:26.228Z",
-          "from": "fdsafdsa",
-          "to": "fdafdsa",
-          "distance": 12,
-          "hours": 1,
-          "directions": ""
-        },
-        {
-          "date": "2020-09-10T19:00:00.000Z",
-          "from": "fdsafds",
-          "to": "fdsafdsa",
-          "distance": 12,
-          "hours": 1,
-          "directions": ""
-        },
-        {
-          "date": "2020-09-16T19:00:00.000Z",
-          "from": "",
-          "to": "",
-          "distance": 0,
-          "hours": 0,
-          "directions": ""
-        },
-        {
-          "date": "2020-09-06T19:00:00.000Z",
-          "from": "ffdsafdsa",
           "to": "",
           "distance": 0,
           "hours": 0,
