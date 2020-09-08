@@ -274,7 +274,7 @@ export function Details() {
                     Add day
                 </Button>
                 <Button
-                    variant="secondary"
+                    variant="success"
                     size="lg"
                     onClick={handleSave}
                     disabled={!isEditing}

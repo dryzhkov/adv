@@ -35,7 +35,11 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
         case 'save':
             const savedTrip = {
                 ...trip,
-                days: [...trip.days],
+                days: [
+                    ...trip.days.sort((a: Day, b: Day) => {
+                        return a.date.getTime() - b.date.getTime();
+                    }),
+                ],
             };
             return {
                 ...state,

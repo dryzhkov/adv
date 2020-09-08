@@ -1,3 +1,5 @@
+import { title } from 'process';
+
 export interface Trip {
     id: number;
     title: string;
@@ -13,11 +15,23 @@ export interface Day {
     directions: string;
 }
 
-export function getTrips(): Promise<Trip[]> {
+export function getTrips(sortByDate?: boolean): Promise<Trip[]> {
     return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips`)
         .then((response) => {
             if (response.ok) {
-                return response.json();
+                return response.json().then((trips: Trip[]) => {
+                    trips.forEach((t) => convertStringToDate(t));
+
+                    if (sortByDate) {
+                        trips.sort((a: Trip, b: Trip) => {
+                            return (
+                                b.days[0].date.getTime() -
+                                a.days[0].date.getTime()
+                            );
+                        });
+                    }
+                    return trips;
+                });
             }
             return [];
         })
@@ -31,10 +45,13 @@ export function getTripDetails(id: number): Promise<Trip | undefined> {
     return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips/${id}`).then(
         (response) => {
             if (response.ok) {
-                return response.json().then((value: Trip) => {
+                return response.json().then((t: Trip) => {
                     // convert date string to date object
-                    convertStringToDate(value);
-                    return value;
+                    convertStringToDate(t);
+                    t.days.sort((a: Day, b: Day) => {
+                        return a.date.getTime() - b.date.getTime();
+                    });
+                    return t;
                 });
             }
             return undefined;

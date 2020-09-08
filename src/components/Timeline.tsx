@@ -6,7 +6,7 @@ import './Timeline.css';
 export function Timeline() {
     const [trips, setTrips] = useState<Trip[]>([]);
     useEffect(() => {
-        getTrips().then((trips) => setTrips(trips));
+        getTrips(true /* sort by date */).then((trips) => setTrips(trips));
     }, []);
 
     function renderTrips() {
@@ -20,6 +20,7 @@ export function Timeline() {
                     >
                         <div className="trip">
                             <h2>{t.title}</h2>
+                            <h3>{t.days[0].date.toDateString()}</h3>
                         </div>
                     </div>
                 </Link>
