@@ -61,7 +61,6 @@ export function Timeline() {
 
     return (
         <div id="adv">
-            {/* <h2 id="page-title">Adventure Timeline</h2> */}
             <div className="timeline">{renderTrips()}</div>
         </div>
     );
