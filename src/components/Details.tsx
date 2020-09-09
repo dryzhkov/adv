@@ -21,7 +21,8 @@ import {
     deleteTrip,
     updateTrip,
     getTripDetails,
-    Day,
+    calcTotalDistance,
+    calcTotalHours,
 } from '../services/tripService';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -52,22 +53,6 @@ export function Details() {
         variant: 'info',
     });
     const { trip, dayIndex, showDatePicker, selectedDate, isEditing } = state;
-
-    function getTotalHours() {
-        return trip.days.reduce(
-            (accumulator: number, currentValue: Day) =>
-                accumulator + currentValue.hours,
-            0
-        );
-    }
-
-    function getTotalDistance() {
-        return trip.days.reduce(
-            (accumulator: number, currentValue: Day) =>
-                accumulator + currentValue.distance,
-            0
-        );
-    }
 
     function displayTripDays() {
         return (
@@ -377,10 +362,10 @@ export function Details() {
         return (
             <>
                 <Badge variant="primary" as="div" className="info-badge">
-                    Time: {getTotalHours()} h
+                    Time: {calcTotalHours(trip.days)} h
                 </Badge>
                 <Badge variant="success" as="div" className="info-badge">
-                    Distance: {getTotalDistance()} mi
+                    Distance: {calcTotalDistance(trip.days)} mi
                 </Badge>
             </>
         );

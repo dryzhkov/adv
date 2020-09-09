@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getTrips, Trip } from '../services/tripService';
+import {
+    getTrips,
+    Trip,
+    calcTotalDistance,
+    calcTotalHours,
+} from '../services/tripService';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import './Timeline.css';
@@ -12,10 +17,11 @@ export function Timeline() {
     }, []);
 
     function renderTrips() {
+        const today = new Date();
         let prevYear =
             trips && trips[0] && trips[0].days
                 ? trips[0].days[0].date.getFullYear()
-                : new Date().getFullYear();
+                : today.getFullYear();
 
         return trips.map((t: Trip, index: number) => {
             const curYear = t.days[0].date.getFullYear();
@@ -43,6 +49,12 @@ export function Timeline() {
                                     <Card.Text>
                                         {t.days[0].date.toDateString()}
                                     </Card.Text>
+                                    <Badge variant="primary">
+                                        {calcTotalHours(t.days)} hours
+                                    </Badge>{' '}
+                                    <Badge variant="success">
+                                        {calcTotalDistance(t.days)} miles
+                                    </Badge>
                                 </Card.Body>
                             </Card>
                         </div>

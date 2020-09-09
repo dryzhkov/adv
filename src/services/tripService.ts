@@ -101,3 +101,23 @@ export function deleteTrip(tripId: number): Promise<boolean> {
         return response.ok;
     });
 }
+
+export function calcTotalHours(days: Day[]) {
+    return days
+        ? days.reduce(
+              (accumulator: number, currentValue: Day) =>
+                  accumulator + currentValue.hours,
+              0
+          )
+        : 0;
+}
+
+export function calcTotalDistance(days: Day[]) {
+    return days
+        ? days.reduce(
+              (accumulator: number, currentValue: Day) =>
+                  accumulator + currentValue.distance,
+              0
+          )
+        : 0;
+}
