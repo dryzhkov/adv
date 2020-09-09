@@ -2,38 +2,70 @@
   "trips": [
     {
       "id": 1,
-      "title": "Adventure at Mt. Hood",
+      "title": "Mt. Hood",
       "days": [
         {
-          "date": "2020-08-01",
-          "from": "Seattle, WA",
-          "to": "Portland, OR",
+          "date": "2020-07-23T19:00:00.000Z",
+          "from": "Kirkland, WA",
+          "to": "Government Camp, OR",
+          "distance": 236,
+          "hours": 4,
+          "directions": "https://goo.gl/maps/7g43zE3XW7oKrWG27"
+        },
+        {
+          "date": "2020-07-25T19:00:00.000Z",
+          "from": "Government Camp, OR",
+          "to": "Spray, OR",
+          "distance": 353,
+          "hours": 7,
+          "directions": "https://goo.gl/maps/kwtKNn2ht1WQw5NA9"
+        },
+        {
+          "date": "2020-07-26T19:00:00.000Z",
+          "from": "Government Camp, OR",
+          "to": "Kirkland, WA",
           "distance": 300,
-          "hours": 4.5,
-          "directions": null
+          "hours": 5,
+          "directions": "https://goo.gl/maps/UTW4k24VPGNMja1d8"
         }
       ]
     },
     {
       "id": 2,
-      "title": "Shaniko - Fossile (Oregon)",
+      "title": "Shaniko - Fossile, Oregon",
       "days": [
         {
-          "date": "2019-07-15",
+          "date": "2019-07-07T19:00:00.000Z",
           "from": "Kirkland, WA",
-          "to": "Spray, OR",
-          "distance": 819,
-          "hours": 17,
-          "directions": "https://goo.gl/maps/fftwY4Pykgdv1jEE8"
+          "to": "Grass Valley, OR",
+          "distance": 6.5,
+          "hours": 284,
+          "directions": "https://goo.gl/maps/rTmumF9XKHFERZKx8"
+        },
+        {
+          "date": "2019-07-08T19:00:00.000Z",
+          "from": "Grass Valley, OR",
+          "to": "Kennewick, WA",
+          "distance": 6,
+          "hours": 276,
+          "directions": "https://goo.gl/maps/g35vukfncX33yKjy9"
+        },
+        {
+          "date": "2019-07-09T19:00:00.000Z",
+          "from": "Kennewick, WA",
+          "to": "Kirkland, WA",
+          "distance": 5,
+          "hours": 260,
+          "directions": "https://goo.gl/maps/EMvAHE2kNZXzvT4JA"
         }
       ]
     },
     {
       "id": 3,
-      "title": "California's Lost Coast",
+      "title": "Crater Lake & Crescent City California",
       "days": [
         {
-          "date": "2020-09-01",
+          "date": "2020-09-02T00:00:00.000Z",
           "from": "Kirkland, WA",
           "to": "Grants Pass, OR",
           "distance": 433,
@@ -41,58 +73,88 @@
           "directions": "https://goo.gl/maps/fXiWVRs6gUVtcJiY6"
         },
         {
-          "date": "2020-09-02",
+          "date": "2020-09-03T00:00:00.000Z",
           "from": "Grants Pass, OR",
-          "to": "Eureka, CA",
-          "distance": 294,
-          "hours": 7,
-          "directions": "https://goo.gl/maps/YeBWcrYAGbEVjkPD7"
+          "to": "Crescent City, CA",
+          "distance": 192,
+          "hours": 4,
+          "directions": "https://goo.gl/maps/Y9NMoFob9ZbojNZr8"
         },
         {
-          "date": "2020-09-03",
-          "from": "Eureka, CA",
-          "to": "Grants Pass, OR",
-          "distance": 200,
-          "hours": 4,
-          "directions": "https://goo.gl/maps/ZoKPTx3QM2YnFoUi8"
+          "date": "2020-09-03T19:00:00.000Z",
+          "from": "Grants Pass, OR",
+          "to": "Crater Lake, OR",
+          "distance": 235,
+          "hours": 5,
+          "directions": "https://goo.gl/maps/MyRhRVy1sxbApSxn7"
+        },
+        {
+          "date": "2020-09-04T19:00:00.000Z",
+          "from": "Grants Pass, OR",
+          "to": "Kirkland, WA",
+          "distance": 433,
+          "hours": 7,
+          "directions": "https://goo.gl/maps/7g43zE3XW7oKrWG27"
         }
       ]
     },
     {
-      "title": "Test Trip2",
+      "title": "Camping near Republic, WA",
       "days": [
         {
-          "date": "2020-09-03T00:00:00.000Z",
-          "from": "Eureka, CA",
-          "to": "Grants Pass, OR",
-          "distance": 200,
-          "hours": 4,
-          "directions": "https://goo.gl/maps/ZoKPTx3QM2YnFoUi8"
+          "date": "2019-08-14T19:00:00.000Z",
+          "from": "Kirkland, WA",
+          "to": "Republic, WA",
+          "distance": 294,
+          "hours": 5.5,
+          "directions": "https://goo.gl/maps/55a9VLaZLxnaMjRm6"
         },
         {
-          "date": "2020-09-08T20:39:24.357Z",
-          "from": "Grants Pass, OR",
-          "to": "Seattle, WA",
-          "distance": 420,
-          "hours": 8,
-          "directions": ""
+          "date": "2019-08-15T19:00:00.000Z",
+          "from": "Republic, WA",
+          "to": "Kirkland, WA",
+          "distance": 345,
+          "hours": 7,
+          "directions": "https://goo.gl/maps/pmtKN5DauAcB326u8"
         }
       ],
       "id": 4
     },
     {
-      "title": "Test",
+      "title": "Mt. Rainier (Naches Pass)",
       "days": [
         {
-          "date": "2018-11-15T20:00:00.000Z",
-          "from": "",
-          "to": "",
-          "distance": 0,
-          "hours": 0,
-          "directions": ""
+          "date": "2019-08-24T19:00:00.000Z",
+          "from": "Kirkland WA",
+          "to": "Naches Pass, WA",
+          "distance": 5.5,
+          "hours": 218,
+          "directions": "https://goo.gl/maps/BuG91cJr385b11eF7"
         }
       ],
       "id": 5
+    },
+    {
+      "title": "Camping at Columbia River",
+      "days": [
+        {
+          "date": "2020-07-02T19:00:00.000Z",
+          "from": "Kirkland, WA",
+          "to": "Timberlake Campground, WA",
+          "distance": 276,
+          "hours": 6.5,
+          "directions": "https://goo.gl/maps/cUVU4Qdzc2kvuuok7"
+        },
+        {
+          "date": "2020-07-03T19:00:00.000Z",
+          "from": "Carson City, WA",
+          "to": "Kirkland, WA",
+          "distance": 200,
+          "hours": 5,
+          "directions": "https://goo.gl/maps/tLpJvWTvQAjNedwaA"
+        }
+      ],
+      "id": 6
     }
   ]
 }
