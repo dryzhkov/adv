@@ -12,10 +12,26 @@ export function Timeline() {
     }, []);
 
     function renderTrips() {
+        let prevYear =
+            trips && trips[0] && trips[0].days
+                ? trips[0].days[0].date.getFullYear()
+                : new Date().getFullYear();
+
         return trips.map((t: Trip, index: number) => {
-            return (
-                <>
-                    <Link to={`/details/${t.id}`} key={t.id}>
+            const curYear = t.days[0].date.getFullYear();
+            const output = (
+                <div key={t.id}>
+                    {index === 0 && (
+                        <Badge className="center" variant="info" as="div">
+                            {curYear + 1}
+                        </Badge>
+                    )}
+                    {curYear !== prevYear && (
+                        <Badge className="center" variant="info" as="div">
+                            {prevYear}
+                        </Badge>
+                    )}
+                    <Link to={`/details/${t.id}`}>
                         <div
                             className={
                                 index % 2 === 0 ? 'record left' : 'record right'
@@ -31,14 +47,15 @@ export function Timeline() {
                             </Card>
                         </div>
                     </Link>
-
-                    {index === 0 && (
+                    {index === trips.length - 1 && (
                         <Badge className="center" variant="info" as="div">
-                            2020
+                            {curYear}
                         </Badge>
                     )}
-                </>
+                </div>
             );
+            prevYear = curYear;
+            return output;
         });
     }
 
