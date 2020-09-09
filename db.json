@@ -59,7 +59,7 @@
       ]
     },
     {
-      "title": "Test Trip",
+      "title": "Test Trip2",
       "days": [
         {
           "date": "2020-09-03T00:00:00.000Z",
@@ -71,10 +71,10 @@
         },
         {
           "date": "2020-09-08T20:39:24.357Z",
-          "from": "",
-          "to": "",
-          "distance": 0,
-          "hours": 0,
+          "from": "Grants Pass, OR",
+          "to": "Seattle, WA",
+          "distance": 420,
+          "hours": 8,
           "directions": ""
         }
       ],
