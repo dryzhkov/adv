@@ -46,10 +46,13 @@ export function getTripDetails(id: number): Promise<Trip | undefined> {
         if (response.ok) {
             return response.json().then((t: Trip) => {
                 // convert date string to date object
-                convertStringToDate(t);
-                t.days.sort((a: Day, b: Day) => {
-                    return a.date.getTime() - b.date.getTime();
-                });
+                if (t && t.days) {
+                    convertStringToDate(t);
+                    t.days.sort((a: Day, b: Day) => {
+                        return a.date.getTime() - b.date.getTime();
+                    });
+                }
+
                 return t;
             });
         }
@@ -57,8 +60,8 @@ export function getTripDetails(id: number): Promise<Trip | undefined> {
     });
 }
 
-function convertStringToDate(value: Trip) {
-    value.days.forEach((d) => {
+function convertStringToDate(t: Trip) {
+    t.days.forEach((d) => {
         d.date = new Date(d.date);
     });
 }

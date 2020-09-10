@@ -15,6 +15,7 @@ import Modal from 'react-bootstrap/Modal';
 import Overlay from 'react-bootstrap/Overlay';
 import Table from 'react-bootstrap/Table';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Spinner from 'react-bootstrap/Spinner';
 import detailsReducer, { TripEdit } from '../reducers/detailsReducer';
 import {
     createTrip,
@@ -47,6 +48,7 @@ export function Details() {
     const [state, dispatch] = useReducer(detailsReducer, initialState);
     const deleteRef = useRef(null);
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({
         show: false,
         message: '',
@@ -68,146 +70,153 @@ export function Details() {
                     </tr>
                 </thead>
                 <tbody>
-                    {trip.days.map((d, i) => {
-                        if (isEditing && dayIndex === i) {
-                            return (
-                                <tr key={i}>
-                                    <td>
-                                        {d.date.toDateString()}{' '}
-                                        <Button
-                                            variant="outline-danger"
-                                            onClick={() => {
-                                                dispatch({
-                                                    type: 'removeDay',
-                                                    index: i,
-                                                });
-                                            }}
-                                            size="sm"
-                                            className="removeDayBtn"
-                                        >
-                                            Remove
-                                        </Button>
-                                    </td>
-                                    <td>
-                                        <InputGroup size="sm">
-                                            <FormControl
-                                                aria-label="From"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                defaultValue={d.from}
-                                                onChange={(e) =>
+                    {trip.days &&
+                        trip.days.map((d, i) => {
+                            if (isEditing && dayIndex === i) {
+                                return (
+                                    <tr key={i}>
+                                        <td>
+                                            {d.date.toDateString()}{' '}
+                                            <Button
+                                                variant="outline-danger"
+                                                onClick={() => {
                                                     dispatch({
-                                                        type: 'updateDay',
-                                                        day: {
-                                                            date: d.date,
-                                                            from:
-                                                                e.target.value,
-                                                        },
-                                                    })
-                                                }
-                                            />
-                                        </InputGroup>
-                                    </td>
-                                    <td>
-                                        <InputGroup size="sm">
-                                            <FormControl
-                                                aria-label="To"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                defaultValue={d.to}
-                                                onChange={(e) =>
-                                                    dispatch({
-                                                        type: 'updateDay',
-                                                        day: {
-                                                            date: d.date,
-                                                            to: e.target.value,
-                                                        },
-                                                    })
-                                                }
-                                            />
-                                        </InputGroup>
-                                    </td>
-                                    <td>
-                                        <InputGroup size="sm">
-                                            <FormControl
-                                                aria-label="Distance"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                defaultValue={d.distance}
-                                                onChange={(e) =>
-                                                    dispatch({
-                                                        type: 'updateDay',
-                                                        day: {
-                                                            date: d.date,
-                                                            distance: Number(
-                                                                e.target.value
-                                                            ),
-                                                        },
-                                                    })
-                                                }
-                                            />
-                                        </InputGroup>
-                                    </td>
-                                    <td>
-                                        <InputGroup size="sm">
-                                            <FormControl
-                                                aria-label="Hours"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                defaultValue={d.hours}
-                                                onChange={(e) =>
-                                                    dispatch({
-                                                        type: 'updateDay',
-                                                        day: {
-                                                            date: d.date,
-                                                            hours: Number(
-                                                                e.target.value
-                                                            ),
-                                                        },
-                                                    })
-                                                }
-                                            />
-                                        </InputGroup>
-                                    </td>
-                                    <td>
-                                        <InputGroup size="sm">
-                                            <FormControl
-                                                aria-label="Directions"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                defaultValue={d.directions}
-                                                onChange={(e) =>
-                                                    dispatch({
-                                                        type: 'updateDay',
-                                                        day: {
-                                                            date: d.date,
-                                                            directions:
-                                                                e.target.value,
-                                                        },
-                                                    })
-                                                }
-                                            />
-                                        </InputGroup>
-                                    </td>
-                                </tr>
-                            );
-                        } else {
-                            return (
-                                <tr
-                                    key={i}
-                                    onClick={() =>
-                                        dispatch({
-                                            type: 'startEditing',
-                                            dayIndex: i,
-                                        })
-                                    }
-                                    className="editable"
-                                >
-                                    <td>{d.date.toDateString()}</td>
-                                    <td>{d.from}</td>
-                                    <td>{d.to}</td>
-                                    <td>{d.distance}</td>
-                                    <td>{d.hours}</td>
-                                    <td>{displayMaps(d.directions)}</td>
-                                </tr>
-                            );
-                        }
-                    })}
+                                                        type: 'removeDay',
+                                                        index: i,
+                                                    });
+                                                }}
+                                                size="sm"
+                                                className="removeDayBtn"
+                                            >
+                                                Remove
+                                            </Button>
+                                        </td>
+                                        <td>
+                                            <InputGroup size="sm">
+                                                <FormControl
+                                                    aria-label="From"
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    defaultValue={d.from}
+                                                    onChange={(e) =>
+                                                        dispatch({
+                                                            type: 'updateDay',
+                                                            day: {
+                                                                date: d.date,
+                                                                from:
+                                                                    e.target
+                                                                        .value,
+                                                            },
+                                                        })
+                                                    }
+                                                />
+                                            </InputGroup>
+                                        </td>
+                                        <td>
+                                            <InputGroup size="sm">
+                                                <FormControl
+                                                    aria-label="To"
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    defaultValue={d.to}
+                                                    onChange={(e) =>
+                                                        dispatch({
+                                                            type: 'updateDay',
+                                                            day: {
+                                                                date: d.date,
+                                                                to:
+                                                                    e.target
+                                                                        .value,
+                                                            },
+                                                        })
+                                                    }
+                                                />
+                                            </InputGroup>
+                                        </td>
+                                        <td>
+                                            <InputGroup size="sm">
+                                                <FormControl
+                                                    aria-label="Distance"
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    defaultValue={d.distance}
+                                                    onChange={(e) =>
+                                                        dispatch({
+                                                            type: 'updateDay',
+                                                            day: {
+                                                                date: d.date,
+                                                                distance: Number(
+                                                                    e.target
+                                                                        .value
+                                                                ),
+                                                            },
+                                                        })
+                                                    }
+                                                />
+                                            </InputGroup>
+                                        </td>
+                                        <td>
+                                            <InputGroup size="sm">
+                                                <FormControl
+                                                    aria-label="Hours"
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    defaultValue={d.hours}
+                                                    onChange={(e) =>
+                                                        dispatch({
+                                                            type: 'updateDay',
+                                                            day: {
+                                                                date: d.date,
+                                                                hours: Number(
+                                                                    e.target
+                                                                        .value
+                                                                ),
+                                                            },
+                                                        })
+                                                    }
+                                                />
+                                            </InputGroup>
+                                        </td>
+                                        <td>
+                                            <InputGroup size="sm">
+                                                <FormControl
+                                                    aria-label="Directions"
+                                                    aria-describedby="inputGroup-sizing-sm"
+                                                    defaultValue={d.directions}
+                                                    onChange={(e) =>
+                                                        dispatch({
+                                                            type: 'updateDay',
+                                                            day: {
+                                                                date: d.date,
+                                                                directions:
+                                                                    e.target
+                                                                        .value,
+                                                            },
+                                                        })
+                                                    }
+                                                />
+                                            </InputGroup>
+                                        </td>
+                                    </tr>
+                                );
+                            } else {
+                                return (
+                                    <tr
+                                        key={i}
+                                        onClick={() =>
+                                            dispatch({
+                                                type: 'startEditing',
+                                                dayIndex: i,
+                                            })
+                                        }
+                                        className="editable"
+                                    >
+                                        <td>{d.date.toDateString()}</td>
+                                        <td>{d.from}</td>
+                                        <td>{d.to}</td>
+                                        <td>{d.distance}</td>
+                                        <td>{d.hours}</td>
+                                        <td>{displayMaps(d.directions)}</td>
+                                    </tr>
+                                );
+                            }
+                        })}
                 </tbody>
             </Table>
         );
@@ -440,9 +449,11 @@ export function Details() {
 
     useEffect(() => {
         if (!isNaN(Number(id))) {
-            getTripDetails(id).then(
-                (t) => t && dispatch({ type: 'requestTripSuccess', trip: t })
-            );
+            setLoading(true);
+            getTripDetails(id).then((t) => {
+                t && dispatch({ type: 'requestTripSuccess', trip: t });
+                setLoading(false);
+            });
         }
     }, [id]);
 
@@ -454,19 +465,30 @@ export function Details() {
     }, [memoizedKeydown]);
 
     return (
-        <div className="content">
-            <Alert
-                variant={alert.variant}
-                onClose={() => setAlert({ ...alert, show: false })}
-                show={alert.show}
-                dismissible
-            >
-                <p>{alert.message}</p>
-            </Alert>
-            {displayControls()}
-            {displayTotals()}
-            {displayTitle()}
-            {displayTripDays()}
-        </div>
+        <>
+            {loading && (
+                <Spinner
+                    animation="border"
+                    variant="info"
+                    className="centered-spinner"
+                />
+            )}
+            {!loading && (
+                <div className="content">
+                    <Alert
+                        variant={alert.variant}
+                        onClose={() => setAlert({ ...alert, show: false })}
+                        show={alert.show}
+                        dismissible
+                    >
+                        <p>{alert.message}</p>
+                    </Alert>
+                    {displayControls()}
+                    {displayTotals()}
+                    {displayTitle()}
+                    {displayTripDays()}
+                </div>
+            )}
+        </>
     );
 }

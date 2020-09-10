@@ -8,12 +8,18 @@ import {
 } from '../services/tripService';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
 import './Timeline.css';
 
 export function Timeline() {
     const [trips, setTrips] = useState<Trip[]>([]);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
-        getTrips(true /* sort by date */).then((trips) => setTrips(trips));
+        setLoading(true);
+        getTrips(true /* sort by date */).then((trips) => {
+            setTrips(trips);
+            setLoading(false);
+        });
     }, []);
 
     function renderTrips() {
@@ -73,7 +79,14 @@ export function Timeline() {
 
     return (
         <div id="adv">
-            <div className="timeline">{renderTrips()}</div>
+            {loading && (
+                <Spinner
+                    animation="border"
+                    variant="info"
+                    className="centered-spinner"
+                />
+            )}
+            {!loading && <div className="timeline">{renderTrips()}</div>}
         </div>
     );
 }
