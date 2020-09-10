@@ -8,8 +8,7 @@ try {
         // create .env file
         fs.writeFileSync(
             './.env',
-            `REACT_APP_ADV_API_BASE=${process.env.API_BASE}\n
-        MONGODB_URI=${process.env.MONGODB_URI}\n
+            `MONGODB_URI=${process.env.MONGODB_URI}\n
         MONGODB_USER=${process.env.MONGODB_USER}\n
         MONGODB_PSWD=${process.env.MONGODB_PSWD}\n
         MONGODB_NAME=${process.env.MONGODB_NAME}\n`

@@ -13,8 +13,10 @@ export interface Day {
     directions: string;
 }
 
+const baseAPI = '/.netlify/functions';
+
 export function getTrips(sortByDate?: boolean): Promise<Trip[]> {
-    return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips`)
+    return fetch(`${baseAPI}/trips`)
         .then((response) => {
             if (response.ok) {
                 return response.json().then((trips: Trip[]) => {
@@ -40,21 +42,19 @@ export function getTrips(sortByDate?: boolean): Promise<Trip[]> {
 }
 
 export function getTripDetails(id: number): Promise<Trip | undefined> {
-    return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips/${id}`).then(
-        (response) => {
-            if (response.ok) {
-                return response.json().then((t: Trip) => {
-                    // convert date string to date object
-                    convertStringToDate(t);
-                    t.days.sort((a: Day, b: Day) => {
-                        return a.date.getTime() - b.date.getTime();
-                    });
-                    return t;
+    return fetch(`${baseAPI}/trips/${id}`).then((response) => {
+        if (response.ok) {
+            return response.json().then((t: Trip) => {
+                // convert date string to date object
+                convertStringToDate(t);
+                t.days.sort((a: Day, b: Day) => {
+                    return a.date.getTime() - b.date.getTime();
                 });
-            }
-            return undefined;
+                return t;
+            });
         }
-    );
+        return undefined;
+    });
 }
 
 function convertStringToDate(value: Trip) {
@@ -66,7 +66,7 @@ function convertStringToDate(value: Trip) {
 export function createTrip(trip: Trip): Promise<number | undefined> {
     // remove id property since this is creating a new trip
     delete trip.id;
-    return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips`, {
+    return fetch(`${baseAPI}/trips`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export function createTrip(trip: Trip): Promise<number | undefined> {
 }
 
 export function updateTrip(trip: Trip): Promise<boolean> {
-    return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips/${trip.id}`, {
+    return fetch(`${baseAPI}/trips/${trip.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ export function updateTrip(trip: Trip): Promise<boolean> {
 }
 
 export function deleteTrip(tripId: number): Promise<boolean> {
-    return fetch(`${process.env.REACT_APP_ADV_API_BASE}/trips/${tripId}`, {
+    return fetch(`${baseAPI}/trips/${tripId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
