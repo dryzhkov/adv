@@ -16,7 +16,7 @@ export interface Day {
 const baseAPI = '/.netlify/functions';
 
 export function getTrips(sortByDate?: boolean): Promise<Trip[]> {
-    return fetch(`${baseAPI}/trips`)
+    return fetch(`${baseAPI}/get-trips`)
         .then((response) => {
             if (response.ok) {
                 return response.json().then((trips: Trip[]) => {
