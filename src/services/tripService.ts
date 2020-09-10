@@ -42,7 +42,7 @@ export function getTrips(sortByDate?: boolean): Promise<Trip[]> {
 }
 
 export function getTripDetails(id: number): Promise<Trip | undefined> {
-    return fetch(`${baseAPI}/trips/${id}`).then((response) => {
+    return fetch(`${baseAPI}/get-trip-by-id/${id}`).then((response) => {
         if (response.ok) {
             return response.json().then((t: Trip) => {
                 // convert date string to date object
