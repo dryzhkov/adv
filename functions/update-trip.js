@@ -1,5 +1,5 @@
 import { createMongoClient } from './db/mongo';
-import { getId } from './helpers/getId';
+import { getId, idFilter } from './helpers/getId';
 import { handleResponse } from './helpers/handleReponse';
 
 exports.handler = function (event, context, callback) {
