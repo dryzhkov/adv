@@ -18,7 +18,7 @@
         "start:client": "react-scripts start",
         "start:api": "netlify-lambda serve functions",
         "build": "npm-run-all --parallel build:prod build:functions",
-        "build:prod": "node ./scripts/create-env.js; yarn build",
+        "build:prod": "node ./scripts/create-env.js; react-scripts build",
         "build:functions": "netlify-lambda build functions"
     },
     "eslintConfig": {
