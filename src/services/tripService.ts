@@ -60,16 +60,10 @@ export function getTripDetails(id: number): Promise<Trip | undefined> {
     });
 }
 
-function convertStringToDate(t: Trip) {
-    t.days.forEach((d) => {
-        d.date = new Date(d.date);
-    });
-}
-
 export function createTrip(trip: Trip): Promise<number | undefined> {
     // remove id property since this is creating a new trip
     delete trip.id;
-    return fetch(`${baseAPI}/trips`, {
+    return fetch(`${baseAPI}/create-trip`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -83,7 +77,7 @@ export function createTrip(trip: Trip): Promise<number | undefined> {
 }
 
 export function updateTrip(trip: Trip): Promise<boolean> {
-    return fetch(`${baseAPI}/trips/${trip.id}`, {
+    return fetch(`${baseAPI}/update-trip/${trip.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -95,7 +89,7 @@ export function updateTrip(trip: Trip): Promise<boolean> {
 }
 
 export function deleteTrip(tripId: number): Promise<boolean> {
-    return fetch(`${baseAPI}/trips/${tripId}`, {
+    return fetch(`${baseAPI}/delete-trip/${tripId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -123,4 +117,10 @@ export function calcTotalDistance(days: Day[]) {
               0
           )
         : 0;
+}
+
+function convertStringToDate(t: Trip) {
+    t.days.forEach((d) => {
+        d.date = new Date(d.date);
+    });
 }
