@@ -3,8 +3,8 @@ import { getId } from './helpers/getId';
 import { handleResponse } from './helpers/handleReponse';
 
 exports.handler = function (event, context, callback) {
-    const id = Number(getId(event.path));
-    if (isNaN(id)) {
+    const id = getId(event.path);
+    if (!id) {
         return callback(null, {
             statusCode: 400,
             body: 'invalid id: ' + id,
@@ -26,10 +26,8 @@ exports.handler = function (event, context, callback) {
             return;
         }
         const collection = client.db('motolog').collection('trips');
-        const filter = {
-            id,
-        };
-        collection.updateOne(filter, { $set: body }, (err, result) => {
+
+        collection.updateOne(idFilter(id), { $set: body }, (err, result) => {
             handleResponse(callback, result, err);
             client.close();
         });

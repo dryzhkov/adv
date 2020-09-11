@@ -1,5 +1,5 @@
 export interface Trip {
-    id: number;
+    id: string;
     title: string;
     days: Day[];
 }
@@ -88,7 +88,7 @@ export function updateTrip(trip: Trip): Promise<boolean> {
     });
 }
 
-export function deleteTrip(tripId: number): Promise<boolean> {
+export function deleteTrip(tripId: string): Promise<boolean> {
     return fetch(`${baseAPI}/delete-trip/${tripId}`, {
         method: 'DELETE',
         headers: {

@@ -31,7 +31,7 @@ import './Details.css';
 
 const initialState: TripEdit = {
     trip: {
-        id: -1,
+        id: '',
         title: '',
         days: [],
     },
@@ -399,7 +399,7 @@ export function Details() {
             return;
         }
         dispatch({ type: 'save' });
-        if (trip.id === -1) {
+        if (trip.id === '') {
             // creating a new trip
             createTrip(trip).then((tripId) => {
                 if (tripId) {
@@ -448,7 +448,7 @@ export function Details() {
     );
 
     useEffect(() => {
-        if (!isNaN(Number(id))) {
+        if (id !== 'new') {
             setLoading(true);
             getTripDetails(id).then((t) => {
                 t && dispatch({ type: 'requestTripSuccess', trip: t });
