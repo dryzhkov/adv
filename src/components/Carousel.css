@@ -1,0 +1,36 @@
+.carousel-dot {
+    font-size: 30px;
+    color: #454d55;
+}
+.dots {
+    margin-top: 12.5px;
+}
+.selected-dot {
+    color: #007bff;
+}
+.overlay-content {
+    width: 100%;
+    max-width: 1024px;
+    text-align: center;
+    margin: auto;
+}
+.carousel-controls {
+    display: flex;
+    flex-wrap: wrap;
+}
+.carousel-controls div {
+    flex: 0 0 33.333333%;
+}
+.carousel-arrow {
+    display: block;
+    font-size: 50px;
+    color: #454d55;
+    cursor: pointer;
+    text-align: left;
+}
+.case-left {
+    transform: rotate(180deg);
+}
+.overlay-content img {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
