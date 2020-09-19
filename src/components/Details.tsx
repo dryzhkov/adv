@@ -35,6 +35,7 @@ const initialState: TripEdit = {
         id: '',
         title: '',
         days: [],
+        imageUrls: [],
     },
     saved: undefined,
     isEditing: false,
@@ -42,12 +43,6 @@ const initialState: TripEdit = {
     selectedDate: new Date(),
     dayIndex: -1,
 };
-
-const imageUrls = [
-    'https://mq42nq.bn.files.1drv.com/y4mkGhLvcRuWb-1HPmuTEpVhXrHwEC7XHdYrwEw6SBas7idA2QTk6vdXnUiuckIO4UGM_LW_DBdWt28ECmULM_GCSdoIYTf6piYnek57snh31LIG7WtI7QpXqa3488Me0ZbC2TOQ1ncEp3PITSlglC651wdLjrrDL93t1XNLs98DlLQi2UZ0KKB5HlSsgWOD2a476tpuTNQ7TMWeq_00vrV5A?width=1024&height=768&cropmode=none',
-    'https://mq4wnq.bn.files.1drv.com/y4mfTXBOkUGJS073jNJBI4vBgWhy6Pvn1hHHkr2ossb_H-oMtblSMBmFSFJCuEHhU6U_hiQc2lpys9V_-Ujx_9cchGZRkj-jN2YL1Pyg4HtQYYbZm6UBh6XqL-LCA4fAevPZsO2jIu9OQ97lIQqBxAM8hkhEj_4baSfFEJCaFmpHr-gSwrAU6RKG3ELppK1jaPeJY4o-l_dmn9XmlepK5Xmlw?width=1024&height=768&cropmode=none',
-    'https://mq43nq.bn.files.1drv.com/y4mSexKLEO75ou9JHu27n7iEH1u8zvakLAYCoGRDTlDy-OXd6yiY69tiLo93dkFvr3hiUEFCiEQDPs2U4hH99zSWj0b927SO6oCh4NddqPXh-JeX35RDnNK1NyYphx187xeh_QlJdNwsVNjeTfY4eGHOpceeMvWQua49YrlrXqmFeKuwpvBIFvvi2Rz2G6cIJIDZg2ER13M9v6oqtFeEgprdw?width=1024&height=768&cropmode=none',
-];
 
 export function Details() {
     const { id } = useParams();
@@ -417,7 +412,6 @@ export function Details() {
             });
         } else {
             // updating existing trip
-            console.log('Updating trip: ', trip);
             updateTrip(trip).then((success) => {
                 if (success) {
                     console.log('updated');
@@ -494,7 +488,20 @@ export function Details() {
                     {displayTotals()}
                     {displayTitle()}
                     {displayTripDays()}
-                    <Carousel imageUrls={imageUrls} />
+                    <Carousel
+                        imageUrls={state.trip.imageUrls || []}
+                        setUrls={(urls: string[]) => {
+                            dispatch({ type: 'setImgUrls', imgUrls: urls });
+                        }}
+                        inEditMode={isEditing}
+                        setEditingMode={(edit: boolean) => {
+                            if (edit) {
+                                dispatch({ type: 'startEditing' });
+                            } else {
+                                dispatch({ type: 'stopEditing' });
+                            }
+                        }}
+                    />
                 </div>
             )}
         </>

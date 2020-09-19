@@ -2,6 +2,7 @@ export interface Trip {
     id: string;
     title: string;
     days: Day[];
+    imageUrls?: string[];
 }
 
 export interface Day {

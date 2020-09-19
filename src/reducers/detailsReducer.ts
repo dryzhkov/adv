@@ -51,6 +51,14 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
                 dayIndex: -1,
                 isEditing: false,
             };
+        case 'setImgUrls':
+            return {
+                ...state,
+                trip: {
+                    ...trip,
+                    imageUrls: [...action.imgUrls],
+                },
+            };
         case 'addDay':
             const indexToEdit = trip.days.length;
             const newDay = {
@@ -159,4 +167,5 @@ export type EditAction =
     | { type: 'discard' }
     | { type: 'requestTripSuccess'; trip: Trip }
     | { type: 'updateDay'; day: PartialDay }
-    | { type: 'updateTitle'; title: string };
+    | { type: 'updateTitle'; title: string }
+    | { type: 'setImgUrls'; imgUrls: string[] };
