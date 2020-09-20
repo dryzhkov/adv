@@ -16,7 +16,6 @@ export const Carousel = (props: CarouselProps) => {
     const { imageUrls, inEditMode } = props;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [newImageUrl, setNewImageUrl] = useState('');
-    const [newUrls, setNewUrls] = useState<string[]>([]);
 
     const displayImage = (value: number) => {
         let index = currentIndex + value;
@@ -85,12 +84,6 @@ export const Carousel = (props: CarouselProps) => {
         }
     };
 
-    function handleSave() {
-        props.setUrls([...imageUrls, ...newUrls]);
-        props.setEditingMode(false);
-        setNewUrls([]);
-    }
-
     function displayAddForm() {
         return (
             <div>
@@ -106,7 +99,7 @@ export const Carousel = (props: CarouselProps) => {
                         <Button
                             variant="secondary"
                             onClick={() => {
-                                setNewUrls([...newUrls].concat(newImageUrl));
+                                props.setUrls([...imageUrls, newImageUrl]);
                                 setNewImageUrl('');
                             }}
                             disabled={!newImageUrl}
@@ -114,42 +107,16 @@ export const Carousel = (props: CarouselProps) => {
                             Add
                         </Button>
                         <Button
-                            variant="success"
-                            onClick={handleSave}
-                            disabled={newUrls.length === 0}
-                        >
-                            Save
-                        </Button>
-                        <Button
                             variant="danger"
                             onClick={() => {
-                                setNewUrls([]);
                                 props.setEditingMode(false);
                             }}
                         >
-                            Discard
+                            Close
                         </Button>
                     </InputGroup.Append>
                 </InputGroup>
                 <ListGroup>
-                    {newUrls.map((url, i) => {
-                        return (
-                            <ListGroup.Item key={i} as="li" variant="dark">
-                                {url}{' '}
-                                <Button
-                                    size="sm"
-                                    variant="outline-danger"
-                                    onClick={() => {
-                                        const updated = [...newUrls];
-                                        updated.splice(i, 1);
-                                        setNewUrls(updated);
-                                    }}
-                                >
-                                    Delete
-                                </Button>
-                            </ListGroup.Item>
-                        );
-                    })}
                     {!!imageUrls &&
                         imageUrls.map((url, i) => {
                             return (
