@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Carousel.css';
@@ -12,20 +13,27 @@ export interface CarouselProps {
     inEditMode: boolean;
 }
 
+const IMAGE_TIMEOUT_MS = 5000;
+
 export const Carousel = (props: CarouselProps) => {
     const { imageUrls, inEditMode } = props;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [newImageUrl, setNewImageUrl] = useState('');
+    const [progress, setProgress] = useState(0);
 
-    const displayImage = (value: number) => {
-        let index = currentIndex + value;
-        if (index < 0) {
-            index = imageUrls.length - 1;
-        } else if (index >= imageUrls.length) {
-            index = 0;
-        }
-        setCurrentIndex(index);
-    };
+    const displayImage = useCallback(
+        (value: number) => {
+            let index = currentIndex + value;
+            if (index < 0) {
+                index = imageUrls.length - 1;
+            } else if (index >= imageUrls.length) {
+                index = 0;
+            }
+            setCurrentIndex(index);
+            setProgress(0);
+        },
+        [currentIndex, imageUrls.length]
+    );
 
     useEffect(() => {
         if (inEditMode || imageUrls.length <= 1) {
@@ -34,12 +42,43 @@ export const Carousel = (props: CarouselProps) => {
 
         const timeoutId = setTimeout(() => {
             displayImage(+1);
-        }, 5000);
+        }, IMAGE_TIMEOUT_MS);
+
+        // const intervalId = setInterval(() => {
+        //     setProgress((prev) => {
+        //         if (prev >= 100) {
+        //             return 0;
+        //         }
+        //         return prev + 100 / 20;
+        //     });
+        // }, IMAGE_TIMEOUT_MS / 30);
+
+        return () => {
+            clearTimeout(timeoutId);
+            // clearInterval(intervalId);
+            // setProgress(0);
+        };
+    }, [currentIndex, inEditMode, imageUrls.length, displayImage]);
+
+    useEffect(() => {
+        if (inEditMode || imageUrls.length <= 1) {
+            setProgress(0);
+            return;
+        }
+
+        const timeoutId = setTimeout(() => {
+            setProgress((prev) => {
+                if (prev >= 100) {
+                    return 0;
+                }
+                return prev + 100 / 4;
+            });
+        }, IMAGE_TIMEOUT_MS / 5);
 
         return () => {
             clearTimeout(timeoutId);
         };
-    });
+    }, [progress, inEditMode, imageUrls.length]);
 
     const displayImageIndicators = () => {
         return imageUrls.map((el, index) => {
@@ -143,6 +182,12 @@ export const Carousel = (props: CarouselProps) => {
     ) : (
         <div className="overlay-content">
             {displayControls()}
+            <ProgressBar
+                now={progress}
+                srOnly={true}
+                striped={true}
+                animated={true}
+            ></ProgressBar>
             <img
                 src={imageUrls[currentIndex]}
                 alt=""
