@@ -44,19 +44,8 @@ export const Carousel = (props: CarouselProps) => {
             displayImage(+1);
         }, IMAGE_TIMEOUT_MS);
 
-        // const intervalId = setInterval(() => {
-        //     setProgress((prev) => {
-        //         if (prev >= 100) {
-        //             return 0;
-        //         }
-        //         return prev + 100 / 20;
-        //     });
-        // }, IMAGE_TIMEOUT_MS / 30);
-
         return () => {
             clearTimeout(timeoutId);
-            // clearInterval(intervalId);
-            // setProgress(0);
         };
     }, [currentIndex, inEditMode, imageUrls.length, displayImage]);
 
