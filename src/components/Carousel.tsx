@@ -106,14 +106,6 @@ export const Carousel = (props: CarouselProps) => {
                         >
                             Add
                         </Button>
-                        <Button
-                            variant="danger"
-                            onClick={() => {
-                                props.setEditingMode(false);
-                            }}
-                        >
-                            Close
-                        </Button>
                     </InputGroup.Append>
                 </InputGroup>
                 <ListGroup>
