@@ -35,3 +35,15 @@
     cursor: pointer;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+.preview-img {
+    max-width: 600px;
+}
+.add-img-wrapper {
+    width: 640px;
+    margin: auto;
+}
+.delete-preview-img {
+    position: absolute;
+    top: 0.75rem;
+    right: 1.25rem;
+}

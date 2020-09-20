@@ -86,7 +86,7 @@ export const Carousel = (props: CarouselProps) => {
 
     function displayAddForm() {
         return (
-            <div>
+            <div className="add-img-wrapper">
                 <InputGroup className="mb-3">
                     <FormControl
                         placeholder="Image URL"
@@ -99,7 +99,7 @@ export const Carousel = (props: CarouselProps) => {
                         <Button
                             variant="secondary"
                             onClick={() => {
-                                props.setUrls([...imageUrls, newImageUrl]);
+                                props.setUrls([newImageUrl, ...imageUrls]);
                                 setNewImageUrl('');
                             }}
                             disabled={!newImageUrl}
@@ -121,17 +121,22 @@ export const Carousel = (props: CarouselProps) => {
                         imageUrls.map((url, i) => {
                             return (
                                 <ListGroup.Item key={i} as="li" variant="info">
-                                    {url}{' '}
+                                    <img
+                                        className="preview-img"
+                                        src={url}
+                                        alt=""
+                                    />
                                     <Button
                                         size="sm"
                                         variant="outline-danger"
+                                        className="delete-preview-img"
                                         onClick={() => {
                                             const updated = [...imageUrls];
                                             updated.splice(i, 1);
                                             props.setUrls(updated);
                                         }}
                                     >
-                                        Delete
+                                        Remove
                                     </Button>
                                 </ListGroup.Item>
                             );
