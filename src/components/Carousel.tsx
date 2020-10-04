@@ -112,6 +112,28 @@ export const Carousel = (props: CarouselProps) => {
         }
     };
 
+    const displayMainContent = () => {
+        if (imageUrls.length) {
+            return (
+                <>
+                    <ProgressBar
+                        now={progress}
+                        srOnly={true}
+                        striped={true}
+                        animated={true}
+                    ></ProgressBar>
+                    <img
+                        src={imageUrls[currentIndex]}
+                        alt=""
+                        onClick={() => {
+                            props.setEditingMode(true);
+                        }}
+                    />
+                </>
+            );
+        }
+    };
+
     function displayAddForm() {
         return (
             <div className="add-img-wrapper">
@@ -171,19 +193,7 @@ export const Carousel = (props: CarouselProps) => {
     ) : (
         <div className="overlay-content">
             {displayControls()}
-            <ProgressBar
-                now={progress}
-                srOnly={true}
-                striped={true}
-                animated={true}
-            ></ProgressBar>
-            <img
-                src={imageUrls[currentIndex]}
-                alt=""
-                onClick={() => {
-                    props.setEditingMode(true);
-                }}
-            />
+            {displayMainContent()}
         </div>
     );
 };
