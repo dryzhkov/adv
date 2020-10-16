@@ -22,7 +22,7 @@ export function handleResponse(cb, result, err) {
     }
 }
 
-function mapToClientSchema(response) {
+export function mapToClientSchema(response) {
     if (Array.isArray(response)) {
         return response.map((t) => {
             t.id = t._id;

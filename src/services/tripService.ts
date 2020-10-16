@@ -16,51 +16,6 @@ export interface Day {
 
 const baseAPI = '/.netlify/functions';
 
-export function getTrips(sortByDate?: boolean): Promise<Trip[]> {
-    return fetch(`${baseAPI}/get-trips`)
-        .then((response) => {
-            if (response.ok) {
-                return response.json().then((trips: Trip[]) => {
-                    trips.forEach((t) => convertStringToDate(t));
-
-                    if (sortByDate) {
-                        trips.sort((a: Trip, b: Trip) => {
-                            return (
-                                b.days[0].date.getTime() -
-                                a.days[0].date.getTime()
-                            );
-                        });
-                    }
-                    return trips;
-                });
-            }
-            return [];
-        })
-        .catch((ex) => {
-            console.log('unable to fetch trips: ' + ex);
-            return [];
-        });
-}
-
-export function getTripDetails(id: number): Promise<Trip | undefined> {
-    return fetch(`${baseAPI}/get-trip-by-id/${id}`).then((response) => {
-        if (response.ok) {
-            return response.json().then((t: Trip) => {
-                // convert date string to date object
-                if (t && t.days) {
-                    convertStringToDate(t);
-                    t.days.sort((a: Day, b: Day) => {
-                        return a.date.getTime() - b.date.getTime();
-                    });
-                }
-
-                return t;
-            });
-        }
-        return undefined;
-    });
-}
-
 export function createTrip(trip: Trip): Promise<number | undefined> {
     // remove id property since this is creating a new trip
     delete trip.id;

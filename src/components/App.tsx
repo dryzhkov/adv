@@ -10,40 +10,36 @@ import { Timeline } from './Timeline';
 import './App.css';
 import { NavBar } from './NavBar';
 import { useAuth0 } from '@auth0/auth0-react';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 function App() {
-    const { isAuthenticated, user, isLoading } = useAuth0();
-    console.log(isAuthenticated, user, isLoading);
+    const { isLoading } = useAuth0();
+    const client = new ApolloClient({
+        uri: '/.netlify/functions/graphql',
+        cache: new InMemoryCache(),
+    });
     return (
         <Router>
             <NavBar />
             {!isLoading ? (
-                <main>
-                    <Switch>
-                        <Route path="/login">
-                            <Login />
-                        </Route>
-                        <PrivateRoute
-                            path="/details/:id"
-                            component={Details}
-                        ></PrivateRoute>
-                        <PrivateRoute
-                            path="/"
-                            component={Timeline}
-                        ></PrivateRoute>
-                    </Switch>
-                </main>
+                <ApolloProvider client={client}>
+                    <main>
+                        <Switch>
+                            <Route path="/login">
+                                <Login />
+                            </Route>
+                            <Route
+                                path="/details/:id"
+                                component={Details}
+                            ></Route>
+                            <Route path="/" component={Timeline}></Route>
+                        </Switch>
+                    </main>
+                </ApolloProvider>
             ) : null}
         </Router>
     );
 }
-
-// type PrivateRouteProps = {
-//     component: any;
-//     authed: boolean;
-// } & {
-//     [prop: string]: string;
-// };
 
 function PrivateRoute({ component: Component, ...rest }: any) {
     const { isAuthenticated: authed } = useAuth0();
