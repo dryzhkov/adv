@@ -12,8 +12,7 @@ import { NavBar } from './NavBar';
 import { useAuth0 } from '@auth0/auth0-react';
 
 function App() {
-    const { isAuthenticated, user, isLoading } = useAuth0();
-    console.log(isAuthenticated, user, isLoading);
+    const { isLoading } = useAuth0();
     return (
         <Router>
             <NavBar />
