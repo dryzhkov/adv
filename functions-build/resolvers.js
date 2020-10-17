@@ -74942,6 +74942,23 @@ const resolvers = {
       return _objectSpread(_objectSpread({}, result.ops[0]), {}, {
         id: result.ops[0]._id
       });
+    },
+
+    async updateTrip(_, {
+      id,
+      input
+    }, _context, _info) {
+      const result = await _context.db.collection('trips').updateOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(id), {
+        $set: input
+      });
+      return result.ok;
+    },
+
+    async deleteTrip(_, {
+      id
+    }, _context, _info) {
+      const result = await _context.db.collection('trips').deleteOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(id));
+      return result.ok;
     }
 
   },

@@ -18,6 +18,14 @@ export const resolvers = {
         async createTrip(_, _args, _context, _info) {
             const result = await _context.db.collection('trips').insertOne(_args.input);
             return { ...result.ops[0], id: result.ops[0]._id};
+        },
+        async updateTrip(_, {id, input}, _context, _info) {
+            const result = await _context.db.collection('trips').updateOne(idFilter(id), { $set: input });
+            return result.ok;
+        },
+        async deleteTrip(_, {id}, _context, _info) {
+            const result = await _context.db.collection('trips').deleteOne(idFilter(id));
+            return result.ok;
         }
     },
 
