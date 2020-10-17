@@ -24,14 +24,18 @@ export function handleResponse(cb, result, err) {
 
 export function mapToClientSchema(response) {
     if (Array.isArray(response)) {
-        return response.map((t) => {
-            t.id = t._id;
-            delete t._id;
-            return t;
-        });
+        return response.map(mapToClientTrip);
     } else {
-        response.id = response._id;
-        delete response._id;
-        return response;
+        return mapToClientTrip(response);
+    }
+}
+
+function mapToClientTrip(trip) {
+    const temp = trip._id;
+    delete trip._id;
+    
+    return {
+        ...trip,
+        id: temp,
     }
 }

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./resolvers.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./resolvers.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -74846,9 +74846,64 @@ function idFilter(id) {
 
 /***/ }),
 
-/***/ "./resolvers.ts":
+/***/ "./helpers/handleReponse.js":
+/*!**********************************!*\
+  !*** ./helpers/handleReponse.js ***!
+  \**********************************/
+/*! exports provided: handleResponse, mapToClientSchema */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handleResponse", function() { return handleResponse; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapToClientSchema", function() { return mapToClientSchema; });
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function handleResponse(cb, result, err) {
+  if (err) {
+    console.log(err);
+    cb(null, {
+      statusCode: 400,
+      body: JSON.stringify(err)
+    });
+  } else {
+    let body = result;
+
+    if (Array.isArray(body) && body.length > 0 && body[0]._id !== undefined || typeof body === 'object' && body._id !== undefined) {
+      body = mapToClientSchema(body);
+    }
+
+    cb(null, {
+      statusCode: 200,
+      body: JSON.stringify(body)
+    });
+  }
+}
+function mapToClientSchema(response) {
+  if (Array.isArray(response)) {
+    return response.map(mapToClientTrip);
+  } else {
+    return mapToClientTrip(response);
+  }
+}
+
+function mapToClientTrip(trip) {
+  const temp = trip._id;
+  delete trip._id;
+  return _objectSpread(_objectSpread({}, trip), {}, {
+    id: temp
+  });
+}
+
+/***/ }),
+
+/***/ "./resolvers.js":
 /*!**********************!*\
-  !*** ./resolvers.ts ***!
+  !*** ./resolvers.js ***!
   \**********************/
 /*! exports provided: resolvers */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -74858,6 +74913,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resolvers", function() { return resolvers; });
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! graphql */ "../node_modules/graphql/index.mjs");
 /* harmony import */ var _helpers_getId__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers/getId */ "./helpers/getId.js");
+/* harmony import */ var _helpers_handleReponse__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./helpers/handleReponse */ "./helpers/handleReponse.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -74866,14 +74922,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 const resolvers = {
   Query: {
-    trips(_, _args, _context, _info) {
-      return _context.db.collection('trips').find().toArray();
+    async trips(_, _args, _context, _info) {
+      const rawTrips = await _context.db.collection('trips').find().toArray();
+      return Object(_helpers_handleReponse__WEBPACK_IMPORTED_MODULE_2__["mapToClientSchema"])(rawTrips);
     },
 
-    trip(_, _args, _context, _info) {
-      return _context.db.collection('trips').findOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(_args.id));
+    async trip(_, _args, _context, _info) {
+      const rawTrip = await _context.db.collection('trips').findOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(_args.id));
+      return Object(_helpers_handleReponse__WEBPACK_IMPORTED_MODULE_2__["mapToClientSchema"])(rawTrip);
     }
 
   },

@@ -26,7 +26,7 @@ const typeDefs = gql`
     type Trip @entity {
         id: ID! @id
         title: String!
-        days: [TripDay!]
+        days: [TripDay!]!
         imageUrls: [String]
     }
 
@@ -50,9 +50,6 @@ const typeDefs = gql`
         deleteTrip(id: ID!): Boolean
     }
 `;
-
-
-
 let db;
 const schema = makeExecutableSchema({ typeDefs: [DIRECTIVES, typeDefs], resolvers });
 

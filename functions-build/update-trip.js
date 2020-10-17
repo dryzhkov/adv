@@ -56597,6 +56597,12 @@ function idFilter(id) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handleResponse", function() { return handleResponse; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapToClientSchema", function() { return mapToClientSchema; });
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function handleResponse(cb, result, err) {
   if (err) {
     console.log(err);
@@ -56619,16 +56625,18 @@ function handleResponse(cb, result, err) {
 }
 function mapToClientSchema(response) {
   if (Array.isArray(response)) {
-    return response.map(t => {
-      t.id = t._id;
-      delete t._id;
-      return t;
-    });
+    return response.map(mapToClientTrip);
   } else {
-    response.id = response._id;
-    delete response._id;
-    return response;
+    return mapToClientTrip(response);
   }
+}
+
+function mapToClientTrip(trip) {
+  const temp = trip._id;
+  delete trip._id;
+  return _objectSpread(_objectSpread({}, trip), {}, {
+    id: temp
+  });
 }
 
 /***/ }),

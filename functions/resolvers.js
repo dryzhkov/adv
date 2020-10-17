@@ -1,13 +1,16 @@
 import { GraphQLScalarType } from 'graphql';
 import { idFilter } from './helpers/getId';
+import { mapToClientSchema } from './helpers/handleReponse';
 
 export const resolvers = {
     Query: {
-        trips(_, _args, _context, _info) {
-            return _context.db.collection('trips').find().toArray();
+        async trips(_, _args, _context, _info) {
+            const rawTrips = await _context.db.collection('trips').find().toArray();
+            return mapToClientSchema(rawTrips);
         },
-        trip(_, _args, _context, _info) {
-            return _context.db.collection('trips').findOne(idFilter(_args.id));
+        async trip(_, _args, _context, _info) {
+            const rawTrip = await _context.db.collection('trips').findOne(idFilter(_args.id));
+            return mapToClientSchema(rawTrip);
         },
     },
 
