@@ -1,92 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-    getTrips,
-    Trip,
-    calcTotalDistance,
-    calcTotalHours,
-} from '../services/tripService';
+import { calcTotalDistance, calcTotalHours, normalizeTripDates } from './helpers';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import './Timeline.css';
+import { useQuery } from '@apollo/client';
+import { TRIPS_QUERY } from './queries';
+import { Trip } from '../interfaces';
+
+interface TripsData {
+  trips: Trip[];
+}
 
 export function Timeline() {
-    const [trips, setTrips] = useState<Trip[]>([]);
-    const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        setLoading(true);
-        getTrips(true /* sort by date */).then((trips) => {
-            setTrips(trips);
-            setLoading(false);
-        });
-    }, []);
+  const { loading, error, data } = useQuery<TripsData>(TRIPS_QUERY);
 
-    function renderTrips() {
-        const today = new Date();
-        let prevYear =
-            trips && trips[0] && trips[0].days
-                ? trips[0].days[0].date.getFullYear()
-                : today.getFullYear();
+  if (error) return <p>Error :(</p>;
+  if (loading) return <Spinner animation="border" variant="info" className="centered-spinner" />;
 
-        return trips.map((t: Trip, index: number) => {
-            const curYear = t.days[0].date.getFullYear();
-            const output = (
-                <div key={t.id}>
-                    {index === 0 && (
-                        <Badge className="center" variant="info" as="div">
-                            {curYear + 1}
-                        </Badge>
-                    )}
-                    {curYear !== prevYear && (
-                        <Badge className="center" variant="info" as="div">
-                            {prevYear}
-                        </Badge>
-                    )}
-                    <Link to={`/details/${t.id}`}>
-                        <div
-                            className={
-                                index % 2 === 0 ? 'record left' : 'record right'
-                            }
-                        >
-                            <Card className="trip">
-                                <Card.Body>
-                                    <Card.Title>{t.title}</Card.Title>
-                                    <Card.Text>
-                                        {t.days[0].date.toDateString()}
-                                    </Card.Text>
-                                    <Badge variant="primary">
-                                        {calcTotalHours(t.days)} hours
-                                    </Badge>{' '}
-                                    <Badge variant="success">
-                                        {calcTotalDistance(t.days)} miles
-                                    </Badge>
-                                </Card.Body>
-                            </Card>
-                        </div>
-                    </Link>
-                    {index === trips.length - 1 && (
-                        <Badge className="center" variant="info" as="div">
-                            {curYear}
-                        </Badge>
-                    )}
-                </div>
-            );
-            prevYear = curYear;
-            return output;
-        });
-    }
+  const trips = data ? data.trips.map(normalizeTripDates) : [];
 
-    return (
-        <div id="adv">
-            {loading && (
-                <Spinner
-                    animation="border"
-                    variant="info"
-                    className="centered-spinner"
-                />
-            )}
-            {!loading && <div className="timeline">{renderTrips()}</div>}
+  trips.sort((a: Trip, b: Trip) => {
+    return b.days[0].date.getTime() - a.days[0].date.getTime();
+  });
+
+  function renderTrips() {
+    const today = new Date();
+    let prevYear = trips && trips[0] && trips[0].days ? trips[0].days[0].date.getFullYear() : today.getFullYear();
+
+    return trips.map((t: Trip, index: number) => {
+      const curYear = t.days[0].date.getFullYear();
+      const output = (
+        <div key={t.id}>
+          {index === 0 && (
+            <Badge className="center" variant="info" as="div">
+              {curYear + 1}
+            </Badge>
+          )}
+          {curYear !== prevYear && (
+            <Badge className="center" variant="info" as="div">
+              {prevYear}
+            </Badge>
+          )}
+          <Link to={`/details/${t.id}`}>
+            <div className={index % 2 === 0 ? 'record left' : 'record right'}>
+              <Card className="trip">
+                <Card.Body>
+                  <Card.Title>{t.title}</Card.Title>
+                  <Card.Text>{t.days[0].date.toDateString()}</Card.Text>
+                  <Badge variant="primary">{calcTotalHours(t.days)} hours</Badge>{' '}
+                  <Badge variant="success">{calcTotalDistance(t.days)} miles</Badge>
+                </Card.Body>
+              </Card>
+            </div>
+          </Link>
+          {index === trips.length - 1 && (
+            <Badge className="center" variant="info" as="div">
+              {curYear}
+            </Badge>
+          )}
         </div>
-    );
+      );
+      prevYear = curYear;
+      return output;
+    });
+  }
+
+  return (
+    <div id="adv">
+      <div className="timeline">{renderTrips()}</div>
+    </div>
+  );
 }
