@@ -74948,17 +74948,21 @@ const resolvers = {
       id,
       input
     }, _context, _info) {
-      const result = await _context.db.collection('trips').updateOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(id), {
+      const {
+        result
+      } = await _context.db.collection('trips').updateOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(id), {
         $set: input
       });
-      return result.ok;
+      return result && result.ok === 1;
     },
 
     async deleteTrip(_, {
       id
     }, _context, _info) {
-      const result = await _context.db.collection('trips').deleteOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(id));
-      return result.ok;
+      const {
+        result
+      } = await _context.db.collection('trips').deleteOne(Object(_helpers_getId__WEBPACK_IMPORTED_MODULE_1__["idFilter"])(id));
+      return result && result.ok === 1;
     }
 
   },

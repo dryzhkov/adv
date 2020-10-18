@@ -11,12 +11,12 @@ import Table from 'react-bootstrap/Table';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Spinner from 'react-bootstrap/Spinner';
 import detailsReducer, { TripEdit } from '../reducers/detailsReducer';
-import { createTrip, deleteTrip, updateTrip, calcTotalDistance, calcTotalHours, Trip } from '../services/tripService';
+import { calcTotalDistance, calcTotalHours, Trip } from '../services/tripService';
 import DayPicker from 'react-day-picker';
 import { Carousel } from './Carousel';
 import 'react-day-picker/lib/style.css';
 import './Details.css';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
 const initialState: TripEdit = {
   trip: {
@@ -58,6 +58,26 @@ const GET_TRIP_BY_ID_QUERY = gql`
   }
 `;
 
+const CREATE_TRIP = gql`
+  mutation createTrip($input: InputTrip!) {
+    createTrip(input: $input) {
+      id
+    }
+  }
+`;
+
+const UPDATE_TRIP = gql`
+  mutation updateTrip($id: ID!, $input: InputTrip!) {
+    updateTrip(id: $id, input: $input)
+  }
+`;
+
+const DELETE_TRIP = gql`
+  mutation deleteTrip($id: ID!) {
+    deleteTrip(id: $id)
+  }
+`;
+
 export function Details() {
   const { id } = useParams<{ id: string }>();
   const isCreateNew = id === 'new';
@@ -65,6 +85,10 @@ export function Details() {
     variables: { id },
     skip: isCreateNew,
   });
+
+  const [createTrip, { data: createResponse }] = useMutation(CREATE_TRIP);
+  const [updateTrip] = useMutation(UPDATE_TRIP);
+  const [deleteTrip] = useMutation(DELETE_TRIP);
 
   const history = useHistory();
   const [state, dispatch] = useReducer(detailsReducer, initialState);
@@ -382,32 +406,74 @@ export function Details() {
     dispatch({ type: 'save' });
     if (trip.id === '') {
       // creating a new trip
-      createTrip(trip).then(tripId => {
-        if (tripId) {
-          history.push(`/details/${tripId}`);
-        } else {
-          console.log('something went wrong');
-        }
+      // createTrip(trip).then(tripId => {
+      //   if (tripId) {
+      //     history.push(`/details/${tripId}`);
+      //   } else {
+      //     console.log('something went wrong');
+      //   }
+      // });
+
+      createTrip({
+        variables: {
+          input: {
+            title: trip.title,
+            days: trip.days.map(d => {
+              return {
+                date: d.date.toUTCString(),
+                from: d.from,
+                to: d.to,
+                distance: d.distance,
+                hours: d.hours,
+                directions: d.directions,
+              };
+            }),
+            imageUrls: trip.imageUrls ? [...trip.imageUrls] : [],
+          },
+        },
       });
+      console.log(createResponse);
     } else {
       // updating existing trip
-      updateTrip(trip).then(success => {
-        if (success) {
-          console.log('updated');
-        } else {
-          console.log('something went wrong, couldnt update trip');
-        }
+      // updateTrip(trip).then(success => {
+      //   if (success) {
+      //     console.log('updated');
+      //   } else {
+      //     console.log('something went wrong, couldnt update trip');
+      //   }
+      // });
+      console.log(trip);
+      updateTrip({
+        variables: {
+          id: trip.id,
+          input: {
+            title: trip.title,
+            days: trip.days.map(d => {
+              return {
+                date: d.date.toUTCString(),
+                from: d.from,
+                to: d.to,
+                distance: d.distance,
+                hours: d.hours,
+                directions: d.directions,
+              };
+            }),
+            imageUrls: trip.imageUrls ? [...trip.imageUrls] : [],
+          },
+        },
       });
     }
   }
 
   function handleDelete() {
     if (confirmDelete) {
-      deleteTrip(state.trip.id).then(isSuccess => {
-        if (isSuccess) {
-          history.push('/');
-        }
-      });
+      // deleteTrip(state.trip.id).then(isSuccess => {
+      //   if (isSuccess) {
+      //     history.push('/');
+      //   }
+      // });
+      deleteTrip({ variables: { id: state.trip.id } });
+      history.push('/');
     }
     setConfirmDelete(!confirmDelete);
   }

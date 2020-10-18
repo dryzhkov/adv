@@ -20,12 +20,12 @@ export const resolvers = {
             return { ...result.ops[0], id: result.ops[0]._id};
         },
         async updateTrip(_, {id, input}, _context, _info) {
-            const result = await _context.db.collection('trips').updateOne(idFilter(id), { $set: input });
-            return result.ok;
+            const { result } = await _context.db.collection('trips').updateOne(idFilter(id), { $set: input });
+            return result && result.ok === 1;
         },
         async deleteTrip(_, {id}, _context, _info) {
-            const result = await _context.db.collection('trips').deleteOne(idFilter(id));
-            return result.ok;
+            const { result } = await _context.db.collection('trips').deleteOne(idFilter(id));
+            return result && result.ok === 1;
         }
     },
 
