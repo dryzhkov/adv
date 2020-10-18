@@ -11,12 +11,14 @@ import Table from 'react-bootstrap/Table';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Spinner from 'react-bootstrap/Spinner';
 import detailsReducer, { TripEdit } from '../reducers/detailsReducer';
-import { calcTotalDistance, calcTotalHours, Trip } from '../services/tripService';
+import { calcTotalDistance, calcTotalHours, convertTripToInput } from './helpers';
 import DayPicker from 'react-day-picker';
 import { Carousel } from './Carousel';
 import 'react-day-picker/lib/style.css';
 import './Details.css';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_TRIP, DELETE_TRIP, GET_TRIP_BY_ID_QUERY, TRIPS_QUERY, UPDATE_TRIP } from './queries';
+import { Trip } from '../interfaces';
 
 const initialState: TripEdit = {
   trip: {
@@ -40,44 +42,6 @@ interface TripVars {
   id: string;
 }
 
-const GET_TRIP_BY_ID_QUERY = gql`
-  query GetTripById($id: ID!) {
-    trip(id: $id) {
-      id
-      title
-      imageUrls
-      days {
-        date
-        from
-        to
-        distance
-        hours
-        directions
-      }
-    }
-  }
-`;
-
-const CREATE_TRIP = gql`
-  mutation createTrip($input: InputTrip!) {
-    createTrip(input: $input) {
-      id
-    }
-  }
-`;
-
-const UPDATE_TRIP = gql`
-  mutation updateTrip($id: ID!, $input: InputTrip!) {
-    updateTrip(id: $id, input: $input)
-  }
-`;
-
-const DELETE_TRIP = gql`
-  mutation deleteTrip($id: ID!) {
-    deleteTrip(id: $id)
-  }
-`;
-
 export function Details() {
   const { id } = useParams<{ id: string }>();
   const isCreateNew = id === 'new';
@@ -86,9 +50,9 @@ export function Details() {
     skip: isCreateNew,
   });
 
-  const [createTrip, { data: createResponse }] = useMutation(CREATE_TRIP);
-  const [updateTrip] = useMutation(UPDATE_TRIP);
-  const [deleteTrip] = useMutation(DELETE_TRIP);
+  const [createTrip, { loading: createLoading }] = useMutation(CREATE_TRIP);
+  const [updateTrip, { loading: updateLoading }] = useMutation(UPDATE_TRIP);
+  const [deleteTrip, { loading: deleteLoading }] = useMutation(DELETE_TRIP);
 
   const history = useHistory();
   const [state, dispatch] = useReducer(detailsReducer, initialState);
@@ -405,61 +369,32 @@ export function Details() {
     }
     dispatch({ type: 'save' });
     if (trip.id === '') {
-      // creating a new trip
-      // createTrip(trip).then(tripId => {
-      //   if (tripId) {
-      //     history.push(`/details/${tripId}`);
-      //   } else {
-      //     console.log('something went wrong');
-      //   }
-      // });
-
       createTrip({
         variables: {
-          input: {
-            title: trip.title,
-            days: trip.days.map(d => {
-              return {
-                date: d.date.toUTCString(),
-                from: d.from,
-                to: d.to,
-                distance: d.distance,
-                hours: d.hours,
-                directions: d.directions,
-              };
-            }),
-            imageUrls: trip.imageUrls ? [...trip.imageUrls] : [],
-          },
+          input: convertTripToInput(trip),
         },
+        update: (cache, { data: { addItem } }) => {
+          try {
+            const data = cache.readQuery<{ trips: Trip[] }>({ query: TRIPS_QUERY });
+            const trips = data ? [...data.trips, addItem] : [addItem];
+            cache.writeQuery({ query: TRIPS_QUERY, data: { trips } });
+          } catch (e) {
+            console.log(e, data);
+          }
+        },
+      }).then(res => {
+        if (res.data?.createTrip?.id) {
+          history.push(`/details/${res.data.createTrip.id}`);
+        } else {
+          console.log('something went wrong');
+        }
       });
-      console.log(createResponse);
     } else {
       // updating existing trip
-      // updateTrip(trip).then(success => {
-      //   if (success) {
-      //     console.log('updated');
-      //   } else {
-      //     console.log('something went wrong, couldnt update trip');
-      //   }
-      // });
-      console.log(trip);
       updateTrip({
         variables: {
           id: trip.id,
-          input: {
-            title: trip.title,
-            days: trip.days.map(d => {
-              return {
-                date: d.date.toUTCString(),
-                from: d.from,
-                to: d.to,
-                distance: d.distance,
-                hours: d.hours,
-                directions: d.directions,
-              };
-            }),
-            imageUrls: trip.imageUrls ? [...trip.imageUrls] : [],
-          },
+          input: convertTripToInput(trip),
         },
       });
     }
@@ -467,13 +402,23 @@ export function Details() {
 
   function handleDelete() {
     if (confirmDelete) {
-      // deleteTrip(state.trip.id).then(isSuccess => {
-      //   if (isSuccess) {
-      //     history.push('/');
-      //   }
-      // });
-      deleteTrip({ variables: { id: state.trip.id } });
-      history.push('/');
+      deleteTrip({
+        variables: { id: state.trip.id },
+
+        update: cache => {
+          try {
+            const data = cache.readQuery<{ trips: Trip[] }>({ query: TRIPS_QUERY });
+            const trips = data?.trips.filter(({ id: itemId }) => itemId !== id);
+            cache.writeQuery({ query: TRIPS_QUERY, data: { trips } });
+          } catch (e) {
+            console.log(e, data);
+          }
+        },
+      }).then(res => {
+        if (res.data?.deleteTrip) {
+          // history.push('/');
+        }
+      });
     }
     setConfirmDelete(!confirmDelete);
   }
@@ -515,7 +460,8 @@ export function Details() {
   }, [memoizedKeydown]);
 
   if (error) return <p>Error :(</p>;
-  if (loading) {
+
+  if (loading || createLoading || updateLoading || deleteLoading) {
     return <Spinner animation="border" variant="info" className="centered-spinner" />;
   }
 

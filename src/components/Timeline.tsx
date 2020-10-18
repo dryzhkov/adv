@@ -1,29 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Trip, calcTotalDistance, calcTotalHours } from '../services/tripService';
+import { calcTotalDistance, calcTotalHours, normalizeTripDates } from './helpers';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 import './Timeline.css';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { TRIPS_QUERY } from './queries';
+import { Trip } from '../interfaces';
 
 interface TripsData {
   trips: Trip[];
 }
-
-const TRIPS_QUERY = gql`
-  query GetTrips {
-    trips {
-      id
-      title
-      days {
-        date
-        distance
-        hours
-      }
-    }
-  }
-`;
 
 export function Timeline() {
   const { loading, error, data } = useQuery<TripsData>(TRIPS_QUERY);
@@ -31,19 +19,7 @@ export function Timeline() {
   if (error) return <p>Error :(</p>;
   if (loading) return <Spinner animation="border" variant="info" className="centered-spinner" />;
 
-  const trips = data
-    ? data.trips.map(t => {
-        return {
-          ...t,
-          days: t.days.map(d => {
-            return {
-              ...d,
-              date: new Date(d.date),
-            };
-          }),
-        };
-      })
-    : [];
+  const trips = data ? data.trips.map(normalizeTripDates) : [];
 
   trips.sort((a: Trip, b: Trip) => {
     return b.days[0].date.getTime() - a.days[0].date.getTime();
