@@ -23,8 +23,8 @@ function App() {
               <Route path="/login">
                 <Login />
               </Route>
-              <Route path="/details/:id" component={Details}></Route>
-              <Route path="/" component={Timeline}></Route>
+              <PrivateRoute path="/details/:id" component={Details}></PrivateRoute>
+              <PrivateRoute path="/" component={Timeline}></PrivateRoute>
             </Switch>
           </main>
         </ApolloProvider>
