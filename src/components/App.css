@@ -1,32 +1,32 @@
 html {
-    height: 100%;
+  height: 100%;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: open sans, sans-serif;
-    font-size: 14px;
-    color: #f8f9fa;
-    background-color: #61aab3;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  font-family: open sans, sans-serif;
+  font-size: 14px;
+  color: #f8f9fa;
+  background-color: #61aab3;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .editable:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .centered-spinner {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 50px;
-    height: 50px;
-    margin-top: -25px;
-    margin-left: -25px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  margin-left: -25px;
 }
