@@ -9,7 +9,7 @@ export interface TripEdit {
   saved: Trip | undefined;
   isEditing: boolean;
   showDatePicker: boolean;
-  selectedDate: Date;
+  selectedDate: Date | undefined;
   dayIndex: number;
 }
 
@@ -19,6 +19,7 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
     case 'showDatePicker':
       return {
         ...state,
+        selectedDate: action.selectedDate,
         showDatePicker: true,
       };
     case 'hideDatePicker':
@@ -62,7 +63,7 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
     case 'addDay':
       const indexToEdit = trip.days.length;
       const newDay = {
-        date: selectedDate,
+        date: selectedDate ?? new Date(),
         from: '',
         to: '',
         distance: 0,
@@ -98,7 +99,8 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
       throw new Error('invalid index: ' + action.index);
     case 'updateDay':
       const days = [...state.trip.days];
-      let indexToUpdate = days.findIndex(d => d.date === action.day.date);
+      let indexToUpdate =
+        action.indexToUpdate !== undefined ? action.indexToUpdate : days.findIndex(d => d.date === action.day.date);
 
       if (indexToUpdate > -1) {
         days[indexToUpdate] = { ...days[indexToUpdate], ...action.day };
@@ -116,6 +118,7 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
         ...state,
         isEditing: false,
         dayIndex: -1,
+        selectedDate: undefined,
       };
     case 'startEditing':
       return {
@@ -151,7 +154,7 @@ export default function (state: TripEdit, action: EditAction): TripEdit {
 
 export type EditAction =
   | { type: 'request' }
-  | { type: 'showDatePicker' }
+  | { type: 'showDatePicker'; selectedDate: Date }
   | { type: 'hideDatePicker' }
   | { type: 'selectDate'; date: Date }
   | { type: 'save' }
@@ -161,6 +164,6 @@ export type EditAction =
   | { type: 'startEditing'; dayIndex?: number }
   | { type: 'discard' }
   | { type: 'requestTripSuccess'; trip: Trip }
-  | { type: 'updateDay'; day: PartialDay }
+  | { type: 'updateDay'; day: PartialDay; indexToUpdate?: number }
   | { type: 'updateTitle'; title: string }
   | { type: 'setImgUrls'; imgUrls: string[] };

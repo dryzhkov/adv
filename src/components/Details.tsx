@@ -86,7 +86,17 @@ export function Details() {
                 return (
                   <tr key={i}>
                     <td>
-                      {d.date.toDateString()}{' '}
+                      {d.date.toDateString()}
+                      <Button
+                        variant="outline-info"
+                        size="sm"
+                        onClick={() => {
+                          dispatch({ type: 'showDatePicker', selectedDate: d.date });
+                        }}
+                        className="changeDateBtn"
+                      >
+                        Change
+                      </Button>
                       <Button
                         variant="outline-danger"
                         onClick={() => {
@@ -278,7 +288,14 @@ export function Details() {
   function displayControls() {
     return (
       <div className="wrapper">
-        <Button variant="primary" size="lg" onClick={() => dispatch({ type: 'showDatePicker' })}>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={() => {
+            dispatch({ type: 'stopEditing' });
+            dispatch({ type: 'showDatePicker', selectedDate: new Date() });
+          }}
+        >
           Add day
         </Button>
         <Button variant="success" size="lg" onClick={handleSave} disabled={!isEditing}>
@@ -308,6 +325,7 @@ export function Details() {
         <Modal show={showDatePicker} onHide={() => dispatch({ type: 'hideDatePicker' })} centered animation={false}>
           <Modal.Body className="table-dark">
             <DayPicker
+              month={selectedDate}
               showOutsideDays
               todayButton="Go to Today"
               selectedDays={[selectedDate]}
@@ -322,14 +340,34 @@ export function Details() {
             <Button variant="secondary" onClick={() => dispatch({ type: 'hideDatePicker' })}>
               Close
             </Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                dispatch({ type: 'addDay' });
-              }}
-            >
-              Add
-            </Button>
+            {dayIndex === -1 && (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  dispatch({ type: 'addDay' });
+                }}
+              >
+                Add
+              </Button>
+            )}
+            {dayIndex !== -1 && (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  dispatch({
+                    type: 'updateDay',
+                    day: {
+                      date: selectedDate,
+                    },
+                    indexToUpdate: dayIndex,
+                  });
+
+                  dispatch({ type: 'hideDatePicker' });
+                }}
+              >
+                Change
+              </Button>
+            )}
           </Modal.Footer>
         </Modal>
       </div>
@@ -416,7 +454,7 @@ export function Details() {
         },
       }).then(res => {
         if (res.data?.deleteTrip) {
-          // history.push('/');
+          history.push('/');
         }
       });
     }
