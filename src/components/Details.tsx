@@ -20,6 +20,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_TRIP, DELETE_TRIP, GET_TRIP_BY_ID_QUERY, TRIPS_QUERY, UPDATE_TRIP } from './queries';
 import { Trip } from '../interfaces';
 
+import { calculateRoute, generateKML, initializeMaps } from '../maps';
+
 const initialState: TripEdit = {
   trip: {
     id: '',
@@ -37,7 +39,6 @@ const initialState: TripEdit = {
 interface TripData {
   trip: Trip;
 }
-
 interface TripVars {
   id: string;
 }
@@ -64,7 +65,21 @@ export function Details() {
     variant: 'info',
   });
 
+  const [mapsLoaded, setMapsLoaded] = useState(false);
+
   const { trip, dayIndex, showDatePicker, selectedDate, isEditing } = state;
+
+  const initializeGoogleMapsRef = useCallback((node: HTMLElement | null) => {
+    if (node !== null) {
+      initializeMaps(node).then(() => setMapsLoaded(true));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (trip && mapsLoaded) {
+      calculateRoute({ from: trip.days[0].from.toLowerCase(), to: trip.days[0].to.toLowerCase() });
+    }
+  }, [trip, mapsLoaded]);
 
   function displayTripDays() {
     return (
@@ -233,16 +248,28 @@ export function Details() {
   function displayMaps(url: string) {
     if (url) {
       return (
-        <Button
-          variant="info"
-          size="sm"
-          onClick={event => {
-            event.stopPropagation();
-            window.open(url, '_blank');
-          }}
-        >
-          Maps
-        </Button>
+        <>
+          <Button
+            variant="info"
+            size="sm"
+            onClick={event => {
+              event.stopPropagation();
+              window.open(url, '_blank');
+            }}
+          >
+            Maps
+          </Button>
+          <Button
+            variant="info"
+            size="sm"
+            onClick={event => {
+              event.stopPropagation();
+              generateKML();
+            }}
+          >
+            KML
+          </Button>
+        </>
       );
     }
   }
@@ -526,6 +553,7 @@ export function Details() {
           }
         }}
       />
+      <div ref={initializeGoogleMapsRef} id="map"></div>
     </div>
   );
 }

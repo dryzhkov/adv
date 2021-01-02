@@ -34,3 +34,6 @@
 .changeDateBtn {
   margin-left: 10px;
 }
+#map {
+  height: 100%;
+}

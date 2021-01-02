@@ -15,6 +15,7 @@ body {
   background-color: #61aab3;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
 }
 
 .editable:hover {
@@ -29,4 +30,9 @@ body {
   height: 50px;
   margin-top: -25px;
   margin-left: -25px;
+}
+#root,
+.content,
+main {
+  height: 100%;
 }
