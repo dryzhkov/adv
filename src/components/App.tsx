@@ -17,14 +17,12 @@ function App() {
       <NavBar />
       {!isLoading ? (
         <ApolloProvider client={client}>
-          <main>
-            <Switch>
-              <Route path="/login">
-                <Login />
-              </Route>
-              <PrivateRoute path="/" component={Adventures}></PrivateRoute>
-            </Switch>
-          </main>
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <PrivateRoute path="/" component={Adventures}></PrivateRoute>
+          </Switch>
         </ApolloProvider>
       ) : null}
     </Router>

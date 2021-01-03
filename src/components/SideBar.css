@@ -50,3 +50,12 @@ a:link {
   margin: 0;
 }
 
+.year-divider {
+  /* border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd; */
+  text-align: center;
+  margin-bottom: 10px;
+  background-color: var(--light);
+  font-size: .75rem;
+}
+

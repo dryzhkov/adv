@@ -494,6 +494,12 @@ export default function Details(props: DetailsProps) {
   }, [data, id, createNew]);
 
   useEffect(() => {
+    if (id && createNew) {
+      setCreateNew(false);
+    }
+  }, [id, createNew]);
+
+  useEffect(() => {
     document.addEventListener('keydown', memoizedKeydown);
     return () => {
       document.removeEventListener('keydown', memoizedKeydown);
@@ -507,7 +513,10 @@ export default function Details(props: DetailsProps) {
   }
 
   if (!createNew && id === '') {
-    return <div>Create new trip or select an existing one on the left.</div>;
+    return <div className="create-new"><Button variant="primary"
+      onClick={() => {
+        setCreateNew(true);
+      }}>Create</Button> a new trip or select an existing one on the left.</div>;
   }
 
   return (

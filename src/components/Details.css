@@ -31,3 +31,13 @@
 .changeDateBtn {
   margin-left: 10px;
 }
+
+.create-new {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.create-new button {
+  margin: 0 8px 0 0;
+}
