@@ -1,7 +1,6 @@
 import React, { useEffect, useReducer, useCallback, useRef, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
-import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
@@ -42,12 +41,17 @@ interface TripVars {
   id: string;
 }
 
-export function Details() {
-  const { id } = useParams<{ id: string }>();
-  const isCreateNew = id === 'new';
+interface DetailsProps {
+  id: string;
+}
+
+export default function Details(props: DetailsProps) {
+  const { id } = props;
+
+  const [createNew, setCreateNew] = useState(false);
   const { loading, error, data } = useQuery<TripData, TripVars>(GET_TRIP_BY_ID_QUERY, {
     variables: { id },
-    skip: isCreateNew,
+    skip: createNew || id === '',
   });
 
   const [createTrip, { loading: createLoading }] = useMutation(CREATE_TRIP);
@@ -68,7 +72,7 @@ export function Details() {
 
   function displayTripDays() {
     return (
-      <Table striped bordered hover variant="dark">
+      <Table hover >
         <thead>
           <tr>
             <th>Date</th>
@@ -86,7 +90,7 @@ export function Details() {
                 return (
                   <tr key={i}>
                     <td>
-                      {d.date.toDateString()}
+                      {d.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                       <Button
                         variant="outline-info"
                         size="sm"
@@ -95,7 +99,7 @@ export function Details() {
                         }}
                         className="changeDateBtn"
                       >
-                        Change
+                        Edit
                       </Button>
                       <Button
                         variant="outline-danger"
@@ -108,7 +112,7 @@ export function Details() {
                         size="sm"
                         className="removeDayBtn"
                       >
-                        Remove
+                        Delete
                       </Button>
                     </td>
                     <td>
@@ -215,7 +219,7 @@ export function Details() {
                     }
                     className="editable"
                   >
-                    <td>{d.date.toDateString()}</td>
+                    <td>{d.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
                     <td>{d.from}</td>
                     <td>{d.to}</td>
                     <td>{d.distance}</td>
@@ -234,7 +238,7 @@ export function Details() {
     if (url) {
       return (
         <Button
-          variant="info"
+          variant="outline-info"
           size="sm"
           onClick={event => {
             event.stopPropagation();
@@ -250,8 +254,9 @@ export function Details() {
   function displayTitle() {
     if (isEditing) {
       return (
-        <InputGroup size="lg">
-          <FormControl
+        <div>
+          <input
+            type="text"
             aria-label="Title"
             aria-describedby="inputGroup-sizing-sm"
             defaultValue={trip.title || ''}
@@ -264,32 +269,29 @@ export function Details() {
             }
             className="tripTitle"
           />
-        </InputGroup>
+        </div>
       );
     } else {
       return (
-        <Button
-          variant="info"
+        <div
           onClick={() =>
             dispatch({
               type: 'startEditing',
             })
           }
-          size="lg"
-          block
           className="editable tripTitle"
         >
           {trip.title}
-        </Button>
+        </div>
       );
     }
   }
 
   function displayControls() {
     return (
-      <div className="wrapper">
+      <div className="controls">
         <Button
-          variant="primary"
+          variant="outline-secondary"
           size="lg"
           onClick={() => {
             dispatch({ type: 'stopEditing' });
@@ -298,13 +300,13 @@ export function Details() {
         >
           Add day
         </Button>
-        <Button variant="success" size="lg" onClick={handleSave} disabled={!isEditing}>
+        <Button variant="outline-secondary" size="lg" onClick={handleSave} disabled={!isEditing}>
           Save
         </Button>
-        <Button variant="secondary" size="lg" onClick={() => dispatch({ type: 'discard' })} disabled={!isEditing}>
+        <Button variant="outline-secondary" size="lg" onClick={() => dispatch({ type: 'discard' })} disabled={!isEditing}>
           Discard
         </Button>
-        <Button variant="danger" size="lg" onClick={() => handleDelete()} ref={deleteRef}>
+        <Button variant={confirmDelete ? "outline-danger" : "outline-secondary"} size="lg" onClick={() => handleDelete()} ref={deleteRef}>
           Delete Trip
         </Button>
         <Overlay
@@ -377,12 +379,13 @@ export function Details() {
   function displayTotals() {
     return (
       <>
-        <Badge variant="primary" as="div" className="info-badge">
-          Time: {calcTotalHours(trip.days)} h
-        </Badge>
-        <Badge variant="success" as="div" className="info-badge">
-          Distance: {calcTotalDistance(trip.days)} mi
-        </Badge>
+        <span>
+          Time: {calcTotalHours(trip.days)}h
+        </span>
+        {' | '}
+        <span>
+          Distance: {calcTotalDistance(trip.days)}mi
+        </span>
       </>
     );
   }
@@ -477,7 +480,7 @@ export function Details() {
   );
 
   useEffect(() => {
-    if (!isCreateNew && data) {
+    if (!createNew && data) {
       dispatch({
         type: 'requestTripSuccess',
         trip: {
@@ -488,7 +491,7 @@ export function Details() {
         },
       });
     }
-  }, [data, id, isCreateNew]);
+  }, [data, id, createNew]);
 
   useEffect(() => {
     document.addEventListener('keydown', memoizedKeydown);
@@ -503,14 +506,18 @@ export function Details() {
     return <Spinner animation="border" variant="info" className="centered-spinner" />;
   }
 
+  if (!createNew && id === '') {
+    return <div>Create new trip or select an existing one on the left.</div>;
+  }
+
   return (
     <div className="content">
       <Alert variant={alert.variant} onClose={() => setAlert({ ...alert, show: false })} show={alert.show} dismissible>
         <p>{alert.message}</p>
       </Alert>
       {displayControls()}
-      {displayTotals()}
       {displayTitle()}
+      {displayTotals()}
       {displayTripDays()}
       <Carousel
         imageUrls={state.trip.imageUrls || []}

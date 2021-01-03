@@ -1,31 +1,28 @@
-.wrapper {
+.controls {
   align-items: start;
   display: grid;
-  grid-template-columns: 170px 170px 170px 170px;
+  grid-template-columns: 150px 150px 150px 150px;
   justify-content: end;
-  grid-template-rows: 70px;
+  /* grid-template-rows: 70px; */
 }
 
-.info-badge {
-  margin: 0 10px 10px 0;
-  font-size: 1.25rem;
-}
-.wrapper button {
-  width: 150px;
-  height: 50px;
+.controls button {
+  /* width: 150px;
+  height: 50px; */
   padding: 0;
-  margin: 20px;
-}
-
-.tripTitle {
-  margin-top: 0;
+  margin-left: 20px;
+  /* color: var(--dark); */
 }
 
 .content {
   margin: 15px;
+  width: 100%;
 }
 .tripTitle {
-  text-align: center;
+  /* text-align: center; */
+  margin-top: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
 }
 .removeDayBtn {
   margin-top: 2px;
