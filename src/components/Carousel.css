@@ -1,12 +1,12 @@
 .carousel-dot {
     font-size: 30px;
-    color: #454d55;
+    color: var(--gray);
 }
 .dots {
     margin-top: 12.5px;
 }
 .selected-dot {
-    color: #007bff;
+    color: var(--dark);
 }
 .overlay-content {
     width: 100%;
@@ -24,7 +24,7 @@
 .carousel-arrow {
     display: block;
     font-size: 50px;
-    color: #454d55;
+    color: var(--gray);
     cursor: pointer;
     text-align: left;
 }
@@ -35,15 +35,30 @@
     cursor: pointer;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+.image-preview-list {
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+.image-preview-list li {
+    position: relative;
+}
 .preview-img {
-    max-width: 600px;
+    width: 252px;
+    margin: 2px;
 }
 .add-img-wrapper {
-    width: 640px;
+    max-width: 1046px;
     margin: auto;
+    padding: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 5px;
+    background-color: var(--light);
 }
 .delete-preview-img {
     position: absolute;
-    top: 0.75rem;
-    right: 1.25rem;
+    top: 5px;
+    right: 5px;
+    font-weight: bold;
 }

@@ -92,7 +92,7 @@ export default function Details(props: DetailsProps) {
                     <td>
                       {d.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                       <Button
-                        variant="outline-info"
+                        variant="outline-dark"
                         size="sm"
                         onClick={() => {
                           dispatch({ type: 'showDatePicker', selectedDate: d.date });
@@ -238,7 +238,7 @@ export default function Details(props: DetailsProps) {
     if (url) {
       return (
         <Button
-          variant="outline-info"
+          variant="outline-dark"
           size="sm"
           onClick={event => {
             event.stopPropagation();
@@ -291,7 +291,7 @@ export default function Details(props: DetailsProps) {
     return (
       <div className="controls">
         <Button
-          variant="outline-secondary"
+          variant="outline-dark"
           size="lg"
           onClick={() => {
             dispatch({ type: 'stopEditing' });
@@ -300,13 +300,13 @@ export default function Details(props: DetailsProps) {
         >
           Add day
         </Button>
-        <Button variant="outline-secondary" size="lg" onClick={handleSave} disabled={!isEditing}>
+        <Button variant="outline-dark" size="lg" onClick={handleSave} disabled={!isEditing}>
           Save
         </Button>
-        <Button variant="outline-secondary" size="lg" onClick={() => dispatch({ type: 'discard' })} disabled={!isEditing}>
+        <Button variant="outline-dark" size="lg" onClick={() => dispatch({ type: 'discard' })} disabled={!isEditing}>
           Discard
         </Button>
-        <Button variant={confirmDelete ? "outline-danger" : "outline-secondary"} size="lg" onClick={() => handleDelete()} ref={deleteRef}>
+        <Button variant={confirmDelete ? "outline-danger" : "outline-dark"} size="lg" onClick={() => handleDelete()} ref={deleteRef}>
           Delete Trip
         </Button>
         <Overlay
@@ -324,8 +324,8 @@ export default function Details(props: DetailsProps) {
             </Tooltip>
           )}
         </Overlay>
-        <Modal show={showDatePicker} onHide={() => dispatch({ type: 'hideDatePicker' })} centered animation={false}>
-          <Modal.Body className="table-dark">
+        <Modal show={showDatePicker} onHide={() => dispatch({ type: 'hideDatePicker' })} centered animation={false} size="sm">
+          <Modal.Body className="modal-light">
             <DayPicker
               month={selectedDate}
               showOutsideDays
@@ -338,7 +338,7 @@ export default function Details(props: DetailsProps) {
               }}
             ></DayPicker>
           </Modal.Body>
-          <Modal.Footer className="table-dark">
+          <Modal.Footer className="modal-light">
             <Button variant="secondary" onClick={() => dispatch({ type: 'hideDatePicker' })}>
               Close
             </Button>

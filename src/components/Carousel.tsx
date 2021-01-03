@@ -3,7 +3,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
 import './Carousel.css';
 
 export interface CarouselProps {
@@ -121,6 +120,7 @@ export const Carousel = (props: CarouselProps) => {
                         srOnly={true}
                         striped={true}
                         animated={true}
+                        variant="dark"
                     ></ProgressBar>
                     <img
                         src={imageUrls[currentIndex]}
@@ -147,7 +147,7 @@ export const Carousel = (props: CarouselProps) => {
                     />
                     <InputGroup.Append>
                         <Button
-                            variant="secondary"
+                            variant="dark"
                             onClick={() => {
                                 props.setUrls([newImageUrl, ...imageUrls]);
                                 setNewImageUrl('');
@@ -158,11 +158,11 @@ export const Carousel = (props: CarouselProps) => {
                         </Button>
                     </InputGroup.Append>
                 </InputGroup>
-                <ListGroup>
+                <ul className="image-preview-list">
                     {!!imageUrls &&
                         imageUrls.map((url, i) => {
                             return (
-                                <ListGroup.Item key={i} as="li" variant="info">
+                                <li key={i}>
                                     <img
                                         className="preview-img"
                                         src={url}
@@ -178,12 +178,12 @@ export const Carousel = (props: CarouselProps) => {
                                             props.setUrls(updated);
                                         }}
                                     >
-                                        Remove
+                                        X
                                     </Button>
-                                </ListGroup.Item>
+                                </li>
                             );
                         })}
-                </ListGroup>
+                </ul>
             </div>
         );
     }
@@ -191,9 +191,9 @@ export const Carousel = (props: CarouselProps) => {
     return inEditMode ? (
         displayAddForm()
     ) : (
-        <div className="overlay-content">
-            {displayControls()}
-            {displayMainContent()}
-        </div>
-    );
+            <div className="overlay-content">
+                {displayControls()}
+                {displayMainContent()}
+            </div>
+        );
 };
