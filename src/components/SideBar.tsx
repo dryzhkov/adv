@@ -1,19 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { calcTotalDistance, calcTotalHours, normalizeTripDates } from './helpers';
-import Badge from 'react-bootstrap/Badge';
-import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
-import './Timeline.css';
+import './SideBar.css';
 import { useQuery } from '@apollo/client';
 import { TRIPS_QUERY } from './queries';
 import { Trip } from '../interfaces';
+import Button from 'react-bootstrap/Button';
 
 interface TripsData {
   trips: Trip[];
 }
 
-export function Timeline() {
+interface SideBarProps {
+  onItemClicked: (itemId: string) => void;
+}
+
+export function SideBar(props: SideBarProps) {
+  const { onItemClicked } = props;
   const { loading, error, data } = useQuery<TripsData>(TRIPS_QUERY);
 
   if (error) return <p>Error :(</p>;
@@ -32,35 +35,34 @@ export function Timeline() {
     return trips.map((t: Trip, index: number) => {
       const curYear = t.days[0].date.getFullYear();
       const output = (
-        <div key={t.id}>
+        <li key={t.id}>
           {index === 0 && (
-            <Badge className="center" variant="info" as="div">
+            <section className="year-divider">
               {curYear + 1}
-            </Badge>
+            </section>
           )}
           {curYear !== prevYear && (
-            <Badge className="center" variant="info" as="div">
+            <section className="year-divider">
               {prevYear}
-            </Badge>
+            </section>
           )}
-          <Link to={`/details/${t.id}`}>
-            <div className={index % 2 === 0 ? 'record left' : 'record right'}>
-              <Card className="trip">
-                <Card.Body>
-                  <Card.Title>{t.title}</Card.Title>
-                  <Card.Text>{t.days[0].date.toDateString()}</Card.Text>
-                  <Badge variant="primary">{calcTotalHours(t.days)} hours</Badge>{' '}
-                  <Badge variant="success">{calcTotalDistance(t.days)} miles</Badge>
-                </Card.Body>
-              </Card>
-            </div>
-          </Link>
-          {index === trips.length - 1 && (
-            <Badge className="center" variant="info" as="div">
+
+          <div className="sidebar-card" onClick={() => { onItemClicked(t.id) }}>
+            <header>
+              <strong className="sidebar-item-title">{t.title}</strong>
+            </header>
+            <Button variant="gray" className="sidebar-open-button"></Button>
+            <p className="sidebar-item-body">{t.days[0].date.toDateString()}</p>
+            <span>{calcTotalHours(t.days)} hours</span>{' '}
+            <span>{calcTotalDistance(t.days)} miles</span>
+          </div>
+
+          {/* {index === trips.length - 1 && (
+            <section>
               {curYear}
-            </Badge>
-          )}
-        </div>
+            </section>
+          )} */}
+        </li>
       );
       prevYear = curYear;
       return output;
@@ -68,8 +70,6 @@ export function Timeline() {
   }
 
   return (
-    <div id="adv">
-      <div className="timeline">{renderTrips()}</div>
-    </div>
+    <ul className="sidebar-list">{renderTrips()}</ul>
   );
 }

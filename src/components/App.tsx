@@ -1,11 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { Details } from './Details';
-import { Timeline } from './Timeline';
 import './App.css';
 import { NavBar } from './NavBar';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import Adventures from './Adventures';
 
 function App() {
   const { isLoading } = useAuth0();
@@ -18,15 +17,12 @@ function App() {
       <NavBar />
       {!isLoading ? (
         <ApolloProvider client={client}>
-          <main>
-            <Switch>
-              <Route path="/login">
-                <Login />
-              </Route>
-              <PrivateRoute path="/details/:id" component={Details}></PrivateRoute>
-              <PrivateRoute path="/" component={Timeline}></PrivateRoute>
-            </Switch>
-          </main>
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <PrivateRoute path="/" component={Adventures}></PrivateRoute>
+          </Switch>
         </ApolloProvider>
       ) : null}
     </Router>
@@ -42,13 +38,13 @@ function PrivateRoute({ component: Component, ...rest }: any) {
         authed === true ? (
           <Component {...props} />
         ) : (
-          <Redirect
-            to={{
-              pathname: '/login',
-              state: { from: props.location },
-            }}
-          />
-        )
+            <Redirect
+              to={{
+                pathname: '/login',
+                state: { from: props.location },
+              }}
+            />
+          )
       }
     />
   );
