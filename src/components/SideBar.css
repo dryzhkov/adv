@@ -1,0 +1,61 @@
+a:link {
+  text-decoration: none;
+}
+
+.sidebar-list {
+  padding: 16px 0; 
+}
+
+.sidebar-list li {
+  padding: 0 16px;
+}
+
+.sidebar-card {
+  position: relative;
+  margin-bottom: 12px;
+  padding: 16px;
+  width: 100%;
+  justify-content: space-between;
+  transition: max-height 250ms ease-out;
+  transform: scale(1);
+  z-index: 1;
+  background-color: var(--light);
+  cursor: pointer;
+}
+
+.sidebar-card header {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sidebar-open-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 0;
+  border: none;
+  border-radius: 6px;
+  text-align: start;
+  background-color: transparent;
+  cursor: pointer;
+  outline-style: none;
+  color: transparent;
+  font-size: 0px;
+}
+
+.sidebar-item-body {
+  margin: 0;
+}
+
+.year-divider {
+  /* border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd; */
+  text-align: center;
+  margin-bottom: 10px;
+  background-color: var(--light);
+  font-size: .75rem;
+}
+

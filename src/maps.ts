@@ -92,14 +92,14 @@ function generateKML() {
     <name>${route.copyrights}</name>
       <LineString>
         <coordinates>${steps
-          .map(step =>
-            step.path
-              .map(p => {
-                return `\n          ${p.lng()},${p.lat()},0`;
-              })
-              .join('')
-          )
-          .join('')}
+      .map(step =>
+        step.path
+          .map(p => {
+            return `\n          ${p.lng()},${p.lat()},0`;
+          })
+          .join('')
+      )
+      .join('')}
         </coordinates>
     </LineString>
   </Placemark>`;
